@@ -16,13 +16,13 @@
 
 package com.hivemq.extensions.client;
 
-import com.hivemq.configuration.info.SystemInformationImpl;
 import com.hivemq.extension.sdk.api.client.parameter.ServerInformation;
+import com.hivemq.extension.sdk.api.interceptor.pingrequest.PingReqInboundInterceptor;
+import com.hivemq.extension.sdk.api.interceptor.pingresponse.PingRespOutboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.publish.PublishInboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.publish.PublishOutboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.subscribe.SubscribeInboundInterceptor;
 import com.hivemq.extensions.HiveMQExtensions;
-import com.hivemq.extensions.client.parameter.ServerInformationImpl;
 import com.hivemq.extensions.packets.general.ModifiableDefaultPermissionsImpl;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,11 +57,17 @@ public class ClientContextImplTest {
         });
         clientContext.addSubscribeInboundInterceptor((input, output) -> {
         });
+        clientContext.addPingRequestInboundInterceptor((input, output) -> {
+        });
+        clientContext.addPingResponseOutboundInterceptor((input, output) -> {
+        });
 
-        assertEquals(3, clientContext.getAllInterceptors().size());
+        assertEquals(5, clientContext.getAllInterceptors().size());
         assertEquals(1, clientContext.getPublishInboundInterceptors().size());
         assertEquals(1, clientContext.getPublishOutboundInterceptors().size());
         assertEquals(1, clientContext.getSubscribeInboundInterceptors().size());
+        assertEquals(1, clientContext.getPingRequestInboundInterceptors().size());
+        assertEquals(1, clientContext.getPingResponseOutboundInterceptors().size());
     }
 
     @Test
@@ -105,5 +111,27 @@ public class ClientContextImplTest {
         assertEquals(0, clientContext.getSubscribeInboundInterceptors().size());
         assertEquals(1, clientContext.getPublishInboundInterceptors().size());
 
+    }
+
+    @Test
+    public void test_add_remove_specific_pingreq_pingresp() {
+        final PingReqInboundInterceptor pingReqInboundInterceptor = ((input, output) -> {
+
+        });
+        final PingRespOutboundInterceptor pingRespOutboundInterceptor = ((input, output) -> {
+
+        });
+
+        clientContext.addPingRequestInboundInterceptor(pingReqInboundInterceptor);
+        clientContext.addPingResponseOutboundInterceptor(pingRespOutboundInterceptor);
+
+        assertEquals(1, clientContext.getPingRequestInboundInterceptors().size());
+        assertEquals(1, clientContext.getPingResponseOutboundInterceptors().size());
+
+        clientContext.removePingRequestInboundInterceptor(pingReqInboundInterceptor);
+        clientContext.removePingResponseOutboundInterceptor(pingRespOutboundInterceptor);
+
+        assertEquals(0, clientContext.getPingRequestInboundInterceptors().size());
+        assertEquals(0, clientContext.getPingResponseOutboundInterceptors().size());
     }
 }

@@ -21,6 +21,8 @@ import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.interceptor.Interceptor;
 import com.hivemq.extension.sdk.api.interceptor.disconnect.DisconnectInboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.disconnect.DisconnectOutboundInterceptor;
+import com.hivemq.extension.sdk.api.interceptor.pingrequest.PingReqInboundInterceptor;
+import com.hivemq.extension.sdk.api.interceptor.pingresponse.PingRespOutboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.publish.PublishInboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.publish.PublishOutboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.subscribe.SubscribeInboundInterceptor;
@@ -39,6 +41,24 @@ import java.util.List;
  */
 @DoNotImplement
 public interface ClientContext {
+
+    /**
+     * Adds an {@link PingReqInboundInterceptor} for this client. <br> Subsequent adding of the same interceptor
+     * will be ignored.
+     *
+     * @param pingReqInboundInterceptor The implementation of a PingReqInInboundInterceptor.
+     * @throws NullPointerException If the interceptor is null.
+     */
+    void addPingReqInboundInterceptor(@NotNull PingReqInboundInterceptor pingReqInboundInterceptor);
+
+    /**
+     * Adds an {@link PingRespOutboundInterceptor} for this client. <br> Subsequent adding of the same interceptor
+     * will be ignored.
+     *
+     * @param pingRespOutboundInterceptor The implementation of a PingRespOutboundInterceptor.
+     * @throws NullPointerException If the interceptor is null.
+     */
+    void addPingRespOutboundInterceptor(@NotNull PingRespOutboundInterceptor pingRespOutboundInterceptor);
 
     /**
      * Adds an {@link PublishInboundInterceptor} for this client. <br>
@@ -135,6 +155,25 @@ public interface ClientContext {
     void removeDisconnectOutboundInterceptor(@NotNull DisconnectOutboundInterceptor disconnectOutboundInterceptor);
 
     /**
+     * Removes a {@link PingRespOutboundInterceptor} for this client. <br> Nothing happens if the interceptor that
+     * should be removed, has not been added in the first place.
+     *
+     * @param pingRespOutboundInterceptor The implementation of a PingResponseOutboundInterceptor.
+     * @throws NullPointerException If the interceptor is null.
+     */
+    void removePingRespOutboundInterceptor(
+            @NotNull PingRespOutboundInterceptor pingRespOutboundInterceptor);
+
+    /**
+     * Removes a {@link PingReqInboundInterceptor} for this client. <br> Nothing happens if the interceptor that
+     * should be removed, has not been added in the first place.
+     *
+     * @param pingReqInboundInterceptor The implementation of a PingRequestInboundInterceptor.
+     * @throws NullPointerException If the interceptor is null.
+     */
+    void removePingReqInboundInterceptor(@NotNull PingReqInboundInterceptor pingReqInboundInterceptor);
+
+    /**
      * Returns all {@link Interceptor} which are registered for this client.
      *
      * @return List of Interceptors for this client.
@@ -169,6 +208,23 @@ public interface ClientContext {
      */
     @Immutable
     @NotNull List<@NotNull SubscribeInboundInterceptor> getSubscribeInboundInterceptors();
+
+    /**
+     * Returns all {@link PingReqInboundInterceptor} which are registered for this client by this extension.
+     *
+     * @return List of PingReqInboundInterceptors for this client.
+     */
+    @Immutable
+    @NotNull List<@NotNull PingReqInboundInterceptor> getPingReqInboundInterceptors();
+
+    /**
+     * Returns all {@link PingRespOutboundInterceptor} which are registered for this client by this extension.
+     *
+     * @return List of PingRespOutboundInterceptors for this client.
+     */
+    @Immutable
+    @NotNull List<@NotNull PingRespOutboundInterceptor> getPingRespOutboundInterceptors();
+
 
     /**
      * Returns all {@link DisconnectOutboundInterceptor} which are registered for this client by this extension.

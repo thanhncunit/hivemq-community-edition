@@ -22,6 +22,8 @@ import com.hivemq.extension.sdk.api.client.ClientContext;
 import com.hivemq.extension.sdk.api.interceptor.Interceptor;
 import com.hivemq.extension.sdk.api.interceptor.disconnect.DisconnectInboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.disconnect.DisconnectOutboundInterceptor;
+import com.hivemq.extension.sdk.api.interceptor.pingrequest.PingReqInboundInterceptor;
+import com.hivemq.extension.sdk.api.interceptor.pingresponse.PingRespOutboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.publish.PublishInboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.publish.PublishOutboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.subscribe.SubscribeInboundInterceptor;
@@ -58,7 +60,7 @@ public class ClientContextPluginImpl extends AbstractOutput implements ClientCon
 
     @Override
     public void addPublishOutboundInterceptor(final @NotNull PublishOutboundInterceptor interceptor) {
-        clientContext.addInterceptor(interceptor);
+        clientContext.addInterceptor(checkNotNull(interceptor, "The interceptor must never be null"));
     }
 
     @Override
@@ -75,6 +77,16 @@ public class ClientContextPluginImpl extends AbstractOutput implements ClientCon
     @Override
     public void addDisconnectOutboundInterceptor(
             final @NotNull DisconnectOutboundInterceptor interceptor) {
+        clientContext.addInterceptor(checkNotNull(interceptor, "The interceptor must never be null"));
+    }
+
+    @Override
+    public void addPingReqInboundInterceptor(final @NotNull PingReqInboundInterceptor interceptor) {
+        clientContext.addInterceptor(checkNotNull(interceptor, "The interceptor must never be null"));
+    }
+
+    @Override
+    public void addPingRespOutboundInterceptor(final @NotNull PingRespOutboundInterceptor interceptor) {
         clientContext.addInterceptor(checkNotNull(interceptor, "The interceptor must never be null"));
     }
 
@@ -104,6 +116,17 @@ public class ClientContextPluginImpl extends AbstractOutput implements ClientCon
             final @NotNull DisconnectOutboundInterceptor interceptor) {
         clientContext.removeInterceptor(checkNotNull(interceptor, "The interceptor must never be null"));
     }
+
+    @Override
+    public void removePingReqInboundInterceptor(final @NotNull PingReqInboundInterceptor interceptor) {
+        clientContext.removeInterceptor(checkNotNull(interceptor, "The interceptor must never be null"));
+    }
+
+    @Override
+    public void removePingRespOutboundInterceptor(final @NotNull PingRespOutboundInterceptor interceptor) {
+        clientContext.removeInterceptor(checkNotNull(interceptor, "The interceptor must never be null"));
+    }
+
 
     @NotNull
     @Override
@@ -145,6 +168,20 @@ public class ClientContextPluginImpl extends AbstractOutput implements ClientCon
     @Immutable
     public List<DisconnectInboundInterceptor> getDisconnectInboundInterceptors() {
         return clientContext.getDisconnectInboundInterceptorsForPlugin(pluginClassloader);
+    }
+
+    @NotNull
+    @Override
+    @Immutable
+    public List<PingReqInboundInterceptor> getPingReqInboundInterceptors() {
+        return clientContext.getPingRequestInboundInterceptorsForPlugin(pluginClassloader);
+    }
+
+    @NotNull
+    @Override
+    @Immutable
+    public List<PingRespOutboundInterceptor> getPingRespOutboundInterceptors() {
+        return clientContext.getPingResponseOutboundInterceptorsForPlugin(pluginClassloader);
     }
 
     @NotNull
