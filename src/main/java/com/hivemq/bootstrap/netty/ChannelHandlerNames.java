@@ -84,6 +84,7 @@ public class ChannelHandlerNames {
     public static final String AUTH_IN_PROGRESS_MESSAGE_HANDLER = "auth_in_progress_message_handler";
 
 
+
     /* *************
      *   Outgoing  *
      ***************/
@@ -115,6 +116,7 @@ public class ChannelHandlerNames {
     public static final String CONNECT_INBOUND_INTERCEPTOR_HANDLER = "connect_inbound_interceptor_handler";
     public static final String CONNACK_OUTBOUND_INTERCEPTOR_HANDLER = "connack_outbound_interceptor_handler";
     public static final String DISCONNECT_INTERCEPTOR_HANDLER = "disconnect_interceptor_handler";
+    public static final String UNSUBSCRIBE_INBOUND_INTERCEPTOR_HANDLER = "inbound_unsubscribe_interceptor_handler";
 
     /* *************
      *     Misc    *

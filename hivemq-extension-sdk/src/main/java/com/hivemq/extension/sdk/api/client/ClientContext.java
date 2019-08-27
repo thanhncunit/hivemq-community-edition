@@ -24,6 +24,7 @@ import com.hivemq.extension.sdk.api.interceptor.disconnect.DisconnectOutboundInt
 import com.hivemq.extension.sdk.api.interceptor.publish.PublishInboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.publish.PublishOutboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.subscribe.SubscribeInboundInterceptor;
+import com.hivemq.extension.sdk.api.interceptor.unsubscribe.UnsubscribeInboundInterceptor;
 import com.hivemq.extension.sdk.api.packets.auth.ModifiableDefaultPermissions;
 
 import java.util.List;
@@ -89,6 +90,15 @@ public interface ClientContext {
     void addDisconnectOutboundInterceptor(@NotNull DisconnectOutboundInterceptor disconnectOutboundInterceptor);
 
     /**
+     * Adds an {@link UnsubscribeInboundInterceptor} for this client. <br> Subsequent adding of the same interceptor
+     * will be ignoretd.
+     *
+     * @param unsubscribeInboundInterceptor The implementation of an UnsubscribeInboundInterceptor.
+     * @throws NullPointerException If the interceptor is null.
+     */
+    void addUnsubscribeInboundInterceptor(@NotNull UnsubscribeInboundInterceptor unsubscribeInboundInterceptor);
+
+    /**
      * Removes an {@link PublishInboundInterceptor} for this client. <br>
      * Nothing happens if the interceptor that should be removed, has not been added in the first place.
      *
@@ -133,6 +143,15 @@ public interface ClientContext {
      * @param disconnectOutboundInterceptor The implementation of an DisconnectOutboundInterceptor.
      */
     void removeDisconnectOutboundInterceptor(@NotNull DisconnectOutboundInterceptor disconnectOutboundInterceptor);
+
+    /**
+     * Removes an {@link UnsubscribeInboundInterceptor} for this client. <br> Nothing happens if the interceptor that
+     * should be removed, has not been added in the first place.
+     *
+     * @param unsubscribeInboundInterceptor The implementation of an UnsubscribeInboundInterceptor.
+     * @throws NullPointerException If the interceptors is null.
+     */
+    void removeUnsubscribeInboundInterceptor(@NotNull UnsubscribeInboundInterceptor unsubscribeInboundInterceptor);
 
     /**
      * Returns all {@link Interceptor} which are registered for this client.

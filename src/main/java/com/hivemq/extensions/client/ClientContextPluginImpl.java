@@ -25,6 +25,7 @@ import com.hivemq.extension.sdk.api.interceptor.disconnect.DisconnectOutboundInt
 import com.hivemq.extension.sdk.api.interceptor.publish.PublishInboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.publish.PublishOutboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.subscribe.SubscribeInboundInterceptor;
+import com.hivemq.extension.sdk.api.interceptor.unsubscribe.UnsubscribeInboundInterceptor;
 import com.hivemq.extension.sdk.api.packets.auth.ModifiableDefaultPermissions;
 import com.hivemq.extensions.classloader.IsolatedPluginClassloader;
 import com.hivemq.extensions.executor.task.AbstractOutput;
@@ -45,8 +46,9 @@ public class ClientContextPluginImpl extends AbstractOutput implements ClientCon
     @NotNull
     private final ClientContextImpl clientContext;
 
-    public ClientContextPluginImpl(final @NotNull IsolatedPluginClassloader pluginClassloader,
-                                   final @NotNull ClientContextImpl clientContext) {
+    public ClientContextPluginImpl(
+            final @NotNull IsolatedPluginClassloader pluginClassloader,
+            final @NotNull ClientContextImpl clientContext) {
         this.pluginClassloader = pluginClassloader;
         this.clientContext = clientContext;
     }
@@ -79,6 +81,11 @@ public class ClientContextPluginImpl extends AbstractOutput implements ClientCon
     }
 
     @Override
+    public void addUnsubscribeInboundInterceptor(final @NotNull UnsubscribeInboundInterceptor interceptor) {
+        clientContext.addInterceptor(checkNotNull(interceptor, "The interceptor must never be null"));
+    }
+
+    @Override
     public void removePublishInboundInterceptor(final @NotNull PublishInboundInterceptor interceptor) {
         clientContext.removeInterceptor(checkNotNull(interceptor, "The interceptor must never be null"));
     }
@@ -90,6 +97,11 @@ public class ClientContextPluginImpl extends AbstractOutput implements ClientCon
 
     @Override
     public void removeSubscribeInboundInterceptor(final @NotNull SubscribeInboundInterceptor interceptor) {
+        clientContext.removeInterceptor(checkNotNull(interceptor, "The interceptor must never be null"));
+    }
+
+    @Override
+    public void removeUnsubscribeInboundInterceptor(final @NotNull UnsubscribeInboundInterceptor interceptor) {
         clientContext.removeInterceptor(checkNotNull(interceptor, "The interceptor must never be null"));
     }
 

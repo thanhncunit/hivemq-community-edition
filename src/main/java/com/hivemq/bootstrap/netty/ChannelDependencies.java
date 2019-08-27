@@ -164,6 +164,8 @@ public class ChannelDependencies {
     @NotNull
     private final DisconnectInterceptorHandler disconnectInterceptorHandler;
 
+    @NotNull
+    private final UnsubscribeInboundInterceptorHandler unsubscribeInboundInterceptorHandler;
 
     @Inject
     public ChannelDependencies(
@@ -202,8 +204,8 @@ public class ChannelDependencies {
             @NotNull final PublishOutboundInterceptorHandler publishOutboundInterceptorHandler,
             @NotNull final ConnectInboundInterceptorHandler connectInboundInterceptorHandler,
             @NotNull final ConnackOutboundInterceptorHandler connackOutboundInterceptorHandler,
-            @NotNull final DisconnectInterceptorHandler disconnectInterceptorHandler) {
-
+            @NotNull final DisconnectInterceptorHandler disconnectInterceptorHandler,
+            @NotNull final UnsubscribeInboundInterceptorHandler unsubscribeInboundInterceptorHandler) {
 
         this.statisticsInitializer = statisticsInitializer;
         this.connectHandlerProvider = connectHandlerProvider;
@@ -241,6 +243,7 @@ public class ChannelDependencies {
         this.connectInboundInterceptorHandler = connectInboundInterceptorHandler;
         this.connackOutboundInterceptorHandler = connackOutboundInterceptorHandler;
         this.disconnectInterceptorHandler = disconnectInterceptorHandler;
+        this.unsubscribeInboundInterceptorHandler = unsubscribeInboundInterceptorHandler;
     }
 
     @NotNull
@@ -421,5 +424,10 @@ public class ChannelDependencies {
     @NotNull
     public DisconnectInterceptorHandler getDisconnectInterceptorHandler() {
         return disconnectInterceptorHandler;
+    }
+
+    @NotNull
+    public UnsubscribeInboundInterceptorHandler getUnsubscribeInboundInterceptorHandler() {
+        return unsubscribeInboundInterceptorHandler;
     }
 }
