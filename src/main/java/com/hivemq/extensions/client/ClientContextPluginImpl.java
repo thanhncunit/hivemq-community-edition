@@ -24,6 +24,7 @@ import com.hivemq.extension.sdk.api.interceptor.disconnect.DisconnectInboundInte
 import com.hivemq.extension.sdk.api.interceptor.disconnect.DisconnectOutboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.publish.PublishInboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.publish.PublishOutboundInterceptor;
+import com.hivemq.extension.sdk.api.interceptor.suback.SubackOutboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.subscribe.SubscribeInboundInterceptor;
 import com.hivemq.extension.sdk.api.packets.auth.ModifiableDefaultPermissions;
 import com.hivemq.extensions.classloader.IsolatedPluginClassloader;
@@ -79,6 +80,11 @@ public class ClientContextPluginImpl extends AbstractOutput implements ClientCon
     }
 
     @Override
+    public void addSubackOutboundInterceptor(final @NotNull SubackOutboundInterceptor subackOutboundInterceptor) {
+        clientContext.addInterceptor(checkNotNull(subackOutboundInterceptor, "The interceptor must never be null"));
+    }
+
+    @Override
     public void removePublishInboundInterceptor(final @NotNull PublishInboundInterceptor interceptor) {
         clientContext.removeInterceptor(checkNotNull(interceptor, "The interceptor must never be null"));
     }
@@ -103,6 +109,11 @@ public class ClientContextPluginImpl extends AbstractOutput implements ClientCon
     public void removeDisconnectOutboundInterceptor(
             final @NotNull DisconnectOutboundInterceptor interceptor) {
         clientContext.removeInterceptor(checkNotNull(interceptor, "The interceptor must never be null"));
+    }
+
+    @Override
+    public void removeSubackOutboundInterceptor(final @NotNull SubackOutboundInterceptor subackOutboundInterceptor) {
+        clientContext.removeInterceptor(checkNotNull(subackOutboundInterceptor, "The interceptor must never be null"));
     }
 
     @NotNull

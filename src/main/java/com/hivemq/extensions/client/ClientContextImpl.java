@@ -23,6 +23,7 @@ import com.hivemq.extension.sdk.api.interceptor.disconnect.DisconnectInboundInte
 import com.hivemq.extension.sdk.api.interceptor.disconnect.DisconnectOutboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.publish.PublishInboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.publish.PublishOutboundInterceptor;
+import com.hivemq.extension.sdk.api.interceptor.suback.SubackOutboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.subscribe.SubscribeInboundInterceptor;
 import com.hivemq.extension.sdk.api.packets.auth.ModifiableDefaultPermissions;
 import com.hivemq.extensions.HiveMQExtension;
@@ -87,11 +88,19 @@ public class ClientContextImpl {
         addInterceptor(interceptor);
     }
 
+    public void addSubackOutboundInterceptor(@NotNull final SubackOutboundInterceptor interceptor) {
+        addInterceptor(interceptor);
+    }
+
     public void removePublishOutboundInterceptor(@NotNull final PublishOutboundInterceptor interceptor) {
         removeInterceptor(interceptor);
     }
 
     public void removeSubscribeInboundInterceptor(@NotNull final SubscribeInboundInterceptor interceptor) {
+        removeInterceptor(interceptor);
+    }
+
+    public void removeSubackOutboundInterceptor(@NotNull final SubackOutboundInterceptor interceptor) {
         removeInterceptor(interceptor);
     }
 
@@ -231,6 +240,28 @@ public class ClientContextImpl {
                 .filter(this::hasPluginForClassloader)
                 .sorted(Comparator.comparingInt(this::comparePluginPriority).reversed())
                 .map(interceptor -> (DisconnectOutboundInterceptor) interceptor)
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    @NotNull
+    @Immutable
+    public List<SubackOutboundInterceptor> getSubackOutboundInterceptorsForPlugin(
+            @NotNull final IsolatedPluginClassloader pluginClassloader) {
+        return interceptorList.stream()
+                .filter(interceptor -> interceptor.getClass().getClassLoader().equals(pluginClassloader))
+                .filter(interceptor -> interceptor instanceof SubackOutboundInterceptor)
+                .map(interceptor -> (SubackOutboundInterceptor) interceptor)
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    @NotNull
+    @Immutable
+    public List<SubackOutboundInterceptor> getSubackOutboundInterceptors() {
+        return interceptorList.stream()
+                .filter(interceptor -> interceptor instanceof SubackOutboundInterceptor)
+                .filter(this::hasPluginForClassloader)
+                .sorted(Comparator.comparingInt(this::comparePluginPriority).reversed())
+                .map(interceptor -> (SubackOutboundInterceptor) interceptor)
                 .collect(Collectors.toUnmodifiableList());
     }
 

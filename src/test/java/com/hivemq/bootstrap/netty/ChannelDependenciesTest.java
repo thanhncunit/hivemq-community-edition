@@ -168,6 +168,8 @@ public class ChannelDependenciesTest {
     @Mock
     private DisconnectInterceptorHandler disconnectInterceptorHandler;
 
+    @Mock
+    private SubackOutboundInterceptorHandler subAckOutboundInterceptorHandler;
 
     @Before
     public void setUp() throws Exception {
@@ -210,8 +212,8 @@ public class ChannelDependenciesTest {
                 publishOutboundInterceptorHandler,
                 connectInterceptorHandler,
                 connackOutboundInterceptorHandler,
-                disconnectInterceptorHandler
-        );
+                disconnectInterceptorHandler,
+                subAckOutboundInterceptorHandler);
 
     }
 
@@ -253,5 +255,6 @@ public class ChannelDependenciesTest {
         assertNotNull(channelDependencies.getConnectInboundInterceptorHandler());
         assertNotNull(channelDependencies.getConnackOutboundInterceptorHandler());
         assertNotNull(channelDependencies.getDisconnectInterceptorHandler());
+        assertNotNull(channelDependencies.getSubackOutboundInterceptorHandler());
     }
 }

@@ -23,6 +23,7 @@ import com.hivemq.extension.sdk.api.interceptor.disconnect.DisconnectInboundInte
 import com.hivemq.extension.sdk.api.interceptor.disconnect.DisconnectOutboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.publish.PublishInboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.publish.PublishOutboundInterceptor;
+import com.hivemq.extension.sdk.api.interceptor.suback.SubackOutboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.subscribe.SubscribeInboundInterceptor;
 import com.hivemq.extension.sdk.api.packets.auth.ModifiableDefaultPermissions;
 
@@ -89,6 +90,15 @@ public interface ClientContext {
     void addDisconnectOutboundInterceptor(@NotNull DisconnectOutboundInterceptor disconnectOutboundInterceptor);
 
     /**
+     * Adds a {@link SubackOutboundInterceptor} for this client. <br> Subsequent adding of the same interceptor will be
+     * ignored.
+     *
+     * @param subackOutboundInterceptor The implementation of a SubackOutboundInterceptor.
+     * @throws NullPointerException If the interceptor is null.
+     */
+    void addSubackOutboundInterceptor(@NotNull SubackOutboundInterceptor subackOutboundInterceptor);
+
+    /**
      * Removes an {@link PublishInboundInterceptor} for this client. <br>
      * Nothing happens if the interceptor that should be removed, has not been added in the first place.
      *
@@ -133,6 +143,15 @@ public interface ClientContext {
      * @param disconnectOutboundInterceptor The implementation of an DisconnectOutboundInterceptor.
      */
     void removeDisconnectOutboundInterceptor(@NotNull DisconnectOutboundInterceptor disconnectOutboundInterceptor);
+
+    /**
+     * Removes a {@link SubackOutboundInterceptor} for this client. <br> Nothing happens if the interceptor that should
+     * be removed, has not been added in the first place.
+     *
+     * @param subackOutboundInterceptor The implementation of a SubackOutboundInterceptor.
+     * @throws NullPointerException If the interceptor is null.
+     */
+    void removeSubackOutboundInterceptor(@NotNull SubackOutboundInterceptor subackOutboundInterceptor);
 
     /**
      * Returns all {@link Interceptor} which are registered for this client.
