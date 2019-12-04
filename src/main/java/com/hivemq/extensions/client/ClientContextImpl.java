@@ -169,9 +169,8 @@ public class ClientContextImpl {
     public List<PingRespOutboundInterceptor> getPingResponseOutboundInterceptorsForPlugin(
             @NotNull final IsolatedPluginClassloader pluginClassloader) {
         return interceptorList.stream()
+                .filter(interceptor -> interceptor.getClass().getClassLoader().equals(pluginClassloader))
                 .filter(interceptor -> interceptor instanceof PingRespOutboundInterceptor)
-                .filter(this::hasPluginForClassloader)
-                .sorted(Comparator.comparingInt(this::comparePluginPriority).reversed())
                 .map(interceptor -> (PingRespOutboundInterceptor) interceptor)
                 .collect(Collectors.toUnmodifiableList());
     }
