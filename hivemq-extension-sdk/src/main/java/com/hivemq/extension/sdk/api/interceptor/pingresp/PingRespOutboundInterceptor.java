@@ -1,9 +1,9 @@
-package com.hivemq.extension.sdk.api.interceptor.pingresponse;
+package com.hivemq.extension.sdk.api.interceptor.pingresp;
 
 import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.interceptor.Interceptor;
-import com.hivemq.extension.sdk.api.interceptor.pingresponse.parameter.PingRespOutboundInput;
-import com.hivemq.extension.sdk.api.interceptor.pingresponse.parameter.PingRespOutboundOutput;
+import com.hivemq.extension.sdk.api.interceptor.pingresp.parameter.PingRespOutboundInput;
+import com.hivemq.extension.sdk.api.interceptor.pingresp.parameter.PingRespOutboundOutput;
 
 /**
  * Interface for the ping response interception.
@@ -12,7 +12,6 @@ import com.hivemq.extension.sdk.api.interceptor.pingresponse.parameter.PingRespO
  * <p>
  * If the same instance is shared between multiple clients it can be called by different threads and therefore must be
  * thread-safe.
- * <p>
  *
  * @author Robin Atherton
  */
@@ -29,5 +28,4 @@ public interface PingRespOutboundInterceptor extends Interceptor {
     void onOutboundPingResp(
             @NotNull PingRespOutboundInput pingRespOutboundInput,
             @NotNull PingRespOutboundOutput pingRespOutboundOutput);
-
 }

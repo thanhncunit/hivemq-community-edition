@@ -1,8 +1,8 @@
-package com.hivemq.extension.sdk.api.interceptor.pingrequest.parameter;
+package com.hivemq.extension.sdk.api.interceptor.pingreq.parameter;
 
 import com.hivemq.extension.sdk.api.annotations.DoNotImplement;
 import com.hivemq.extension.sdk.api.async.SimpleAsyncOutput;
-import com.hivemq.extension.sdk.api.interceptor.pingrequest.PingReqInboundInterceptor;
+import com.hivemq.extension.sdk.api.interceptor.pingreq.PingReqInboundInterceptor;
 
 /**
  * This is the output parameter of any {@link PingReqInboundInterceptor}.
@@ -10,6 +10,4 @@ import com.hivemq.extension.sdk.api.interceptor.pingrequest.PingReqInboundInterc
  * @author Robin Atherton
  */
 @DoNotImplement
-public interface PingReqInboundOutput extends SimpleAsyncOutput<PingReqInboundOutput> {
-
-}
+public interface PingReqInboundOutput extends SimpleAsyncOutput<PingReqInboundOutput> {}

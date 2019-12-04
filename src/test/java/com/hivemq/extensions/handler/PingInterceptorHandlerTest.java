@@ -2,12 +2,12 @@ package com.hivemq.extensions.handler;
 
 import com.hivemq.annotations.NotNull;
 import com.hivemq.common.shutdown.ShutdownHooks;
-import com.hivemq.extension.sdk.api.interceptor.pingrequest.PingReqInboundInterceptor;
-import com.hivemq.extension.sdk.api.interceptor.pingrequest.parameter.PingReqInboundInput;
-import com.hivemq.extension.sdk.api.interceptor.pingrequest.parameter.PingReqInboundOutput;
-import com.hivemq.extension.sdk.api.interceptor.pingresponse.PingRespOutboundInterceptor;
-import com.hivemq.extension.sdk.api.interceptor.pingresponse.parameter.PingRespOutboundInput;
-import com.hivemq.extension.sdk.api.interceptor.pingresponse.parameter.PingRespOutboundOutput;
+import com.hivemq.extension.sdk.api.interceptor.pingreq.PingReqInboundInterceptor;
+import com.hivemq.extension.sdk.api.interceptor.pingreq.parameter.PingReqInboundInput;
+import com.hivemq.extension.sdk.api.interceptor.pingreq.parameter.PingReqInboundOutput;
+import com.hivemq.extension.sdk.api.interceptor.pingresp.PingRespOutboundInterceptor;
+import com.hivemq.extension.sdk.api.interceptor.pingresp.parameter.PingRespOutboundInput;
+import com.hivemq.extension.sdk.api.interceptor.pingresp.parameter.PingRespOutboundOutput;
 import com.hivemq.extensions.HiveMQExtension;
 import com.hivemq.extensions.HiveMQExtensions;
 import com.hivemq.extensions.classloader.IsolatedPluginClassloader;

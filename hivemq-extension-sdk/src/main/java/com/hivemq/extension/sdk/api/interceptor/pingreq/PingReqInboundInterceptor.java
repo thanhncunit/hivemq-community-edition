@@ -1,9 +1,9 @@
-package com.hivemq.extension.sdk.api.interceptor.pingrequest;
+package com.hivemq.extension.sdk.api.interceptor.pingreq;
 
 import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.interceptor.Interceptor;
-import com.hivemq.extension.sdk.api.interceptor.pingrequest.parameter.PingReqInboundInput;
-import com.hivemq.extension.sdk.api.interceptor.pingrequest.parameter.PingReqInboundOutput;
+import com.hivemq.extension.sdk.api.interceptor.pingreq.parameter.PingReqInboundInput;
+import com.hivemq.extension.sdk.api.interceptor.pingreq.parameter.PingReqInboundOutput;
 
 /**
  * Interface for the ping request inbound interception.
@@ -19,8 +19,8 @@ import com.hivemq.extension.sdk.api.interceptor.pingrequest.parameter.PingReqInb
 public interface PingReqInboundInterceptor extends Interceptor {
 
     /**
-     * When a {@link PingReqInboundInterceptor} is set through any extension, this method gets called for every
-     * inbound PINGREQ packet from any MQTT client.
+     * When a {@link PingReqInboundInterceptor} is set through any extension, this method gets called for every inbound
+     * PINGREQ packet from any MQTT client.
      *
      * @param pingReqInboundInput  The {@link PingReqInboundInput} parameter.
      * @param pingReqInboundOutput The {@link PingReqInboundOutput} parameter.
@@ -28,5 +28,4 @@ public interface PingReqInboundInterceptor extends Interceptor {
     void onInboundPingReq(
             @NotNull PingReqInboundInput pingReqInboundInput,
             @NotNull PingReqInboundOutput pingReqInboundOutput);
-
 }

@@ -17,8 +17,8 @@
 package com.hivemq.extensions.client;
 
 import com.hivemq.extension.sdk.api.client.parameter.ServerInformation;
-import com.hivemq.extension.sdk.api.interceptor.pingrequest.PingReqInboundInterceptor;
-import com.hivemq.extension.sdk.api.interceptor.pingresponse.PingRespOutboundInterceptor;
+import com.hivemq.extension.sdk.api.interceptor.pingreq.PingReqInboundInterceptor;
+import com.hivemq.extension.sdk.api.interceptor.pingresp.PingRespOutboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.publish.PublishInboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.publish.PublishOutboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.subscribe.SubscribeInboundInterceptor;

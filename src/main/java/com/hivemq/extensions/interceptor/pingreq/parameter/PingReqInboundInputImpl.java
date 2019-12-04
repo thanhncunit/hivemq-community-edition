@@ -1,9 +1,9 @@
-package com.hivemq.extensions.interceptor.pingrequest.parameter;
+package com.hivemq.extensions.interceptor.pingreq.parameter;
 
 import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.client.parameter.ClientInformation;
 import com.hivemq.extension.sdk.api.client.parameter.ConnectionInformation;
-import com.hivemq.extension.sdk.api.interceptor.pingrequest.parameter.PingReqInboundInput;
+import com.hivemq.extension.sdk.api.interceptor.pingreq.parameter.PingReqInboundInput;
 import com.hivemq.extensions.PluginInformationUtil;
 import com.hivemq.extensions.executor.task.PluginTaskInput;
 import io.netty.channel.Channel;

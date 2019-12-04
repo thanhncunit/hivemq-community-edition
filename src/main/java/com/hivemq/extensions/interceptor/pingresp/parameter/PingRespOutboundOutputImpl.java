@@ -1,7 +1,7 @@
-package com.hivemq.extensions.interceptor.pingresponse.parameter;
+package com.hivemq.extensions.interceptor.pingresp.parameter;
 
 import com.hivemq.annotations.NotNull;
-import com.hivemq.extension.sdk.api.interceptor.pingresponse.parameter.PingRespOutboundOutput;
+import com.hivemq.extension.sdk.api.interceptor.pingresp.parameter.PingRespOutboundOutput;
 import com.hivemq.extensions.executor.PluginOutPutAsyncer;
 import com.hivemq.extensions.executor.task.AbstractSimpleAsyncOutput;
 import com.hivemq.extensions.executor.task.PluginTaskOutput;

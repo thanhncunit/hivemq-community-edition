@@ -1,7 +1,7 @@
-package com.hivemq.extension.sdk.api.interceptor.pingresponse.parameter;
+package com.hivemq.extension.sdk.api.interceptor.pingresp.parameter;
 
 import com.hivemq.extension.sdk.api.annotations.DoNotImplement;
-import com.hivemq.extension.sdk.api.interceptor.pingresponse.PingRespOutboundInterceptor;
+import com.hivemq.extension.sdk.api.interceptor.pingresp.PingRespOutboundInterceptor;
 import com.hivemq.extension.sdk.api.parameter.ClientBasedInput;
 
 /**
@@ -10,7 +10,4 @@ import com.hivemq.extension.sdk.api.parameter.ClientBasedInput;
  * @author Robin Atherton
  */
 @DoNotImplement
-public interface PingRespOutboundInput extends ClientBasedInput {
-
-
-}
+public interface PingRespOutboundInput extends ClientBasedInput {}
