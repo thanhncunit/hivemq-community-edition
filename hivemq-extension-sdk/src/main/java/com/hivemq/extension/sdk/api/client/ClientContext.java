@@ -24,6 +24,7 @@ import com.hivemq.extension.sdk.api.interceptor.disconnect.DisconnectOutboundInt
 import com.hivemq.extension.sdk.api.interceptor.publish.PublishInboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.publish.PublishOutboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.subscribe.SubscribeInboundInterceptor;
+import com.hivemq.extension.sdk.api.interceptor.unsuback.UnsubackOutboundInterceptor;
 import com.hivemq.extension.sdk.api.packets.auth.ModifiableDefaultPermissions;
 
 import java.util.List;
@@ -69,6 +70,15 @@ public interface ClientContext {
      * @since 4.2.0
      */
     void addSubscribeInboundInterceptor(@NotNull SubscribeInboundInterceptor subscribeInboundInterceptor);
+
+    /**
+     * Adds an {@link UnsubackOutboundInterceptor} for this client. <br> Subsequent adding of the same interceptor will
+     * be ignored.
+     *
+     * @param unsubackOutboundInterceptor The implementation of an UnsubackOutboundInterceptors.
+     * @throws NullPointerException If the interceptor is null.
+     */
+    void addUnsubackOutboundInterceptor(@NotNull UnsubackOutboundInterceptor unsubackOutboundInterceptor);
 
     /**
      * Adds an {@link DisconnectInboundInterceptor} for this client. <br>
@@ -133,6 +143,14 @@ public interface ClientContext {
      * @param disconnectOutboundInterceptor The implementation of an DisconnectOutboundInterceptor.
      */
     void removeDisconnectOutboundInterceptor(@NotNull DisconnectOutboundInterceptor disconnectOutboundInterceptor);
+
+    /**
+     * Removes an {@link UnsubackOutboundInterceptor} for this client <br> Nothing happens if the interceptor that
+     * should be removed, has not been added in the first place.
+     *
+     * @param unsubackOutboundInterceptor The implementation of an UnsubackOutboundInterceptor.
+     */
+    void removeUnsubackOutboundInterceptor(@NotNull UnsubackOutboundInterceptor unsubackOutboundInterceptor);
 
     /**
      * Returns all {@link Interceptor} which are registered for this client.

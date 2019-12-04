@@ -20,11 +20,16 @@ import com.google.common.collect.ImmutableList;
 import com.hivemq.annotations.Immutable;
 import com.hivemq.annotations.NotNull;
 import com.hivemq.annotations.Nullable;
+import com.hivemq.extension.sdk.api.packets.general.UserProperty;
+import com.hivemq.extension.sdk.api.packets.unsuback.UnsubackPacket;
+import com.hivemq.extension.sdk.api.packets.unsuback.UnsubackReasonCode;
 import com.hivemq.mqtt.message.MessageType;
 import com.hivemq.mqtt.message.mqtt5.Mqtt5UserProperties;
 import com.hivemq.mqtt.message.mqtt5.MqttMessageWithUserProperties;
+import com.hivemq.mqtt.message.mqtt5.MqttUserProperty;
 import com.hivemq.mqtt.message.reason.Mqtt5UnsubAckReasonCode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -66,5 +71,19 @@ public class UNSUBACK extends MqttMessageWithUserProperties.MqttMessageWithIdAnd
     @Override
     public MessageType getType() {
         return MessageType.UNSUBACK;
+    }
+
+    public static @NotNull UNSUBACK createUnsubackFrom(final @NotNull UnsubackPacket packet) {
+        final List<Mqtt5UnsubAckReasonCode> unsubackReasonCodes = new ArrayList<>();
+        for (final UnsubackReasonCode code : packet.getReasonCodes()) {
+            unsubackReasonCodes.add(Mqtt5UnsubAckReasonCode.valueOf(code.name()));
+        }
+        final String reasonString = packet.getReasonString();
+        final ImmutableList.Builder<MqttUserProperty> userPropertyBuilder = ImmutableList.builder();
+        for (final UserProperty userProperty : packet.getUserProperties().asList()) {
+            userPropertyBuilder.add(new MqttUserProperty(userProperty.getName(), userProperty.getValue()));
+        }
+        final Mqtt5UserProperties mqtt5UserProperties = Mqtt5UserProperties.of(userPropertyBuilder.build());
+        return new UNSUBACK(packet.getPacketIdentifier(), unsubackReasonCodes, reasonString, mqtt5UserProperties);
     }
 }

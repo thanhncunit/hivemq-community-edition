@@ -13,9 +13,9 @@ import java.util.List;
 public interface ModifiableUnsubackPacket extends UnsubackPacket {
 
     /**
-     * Sets a list of {@link SubackReasonCode}s for the SUBACK packet.
+     * Sets a list of {@link SubackReasonCode}s for the UNSUBACK packet.
      *
-     * @param reasonCodes the list of reason codes to be written into the SUBACK packet.
+     * @param reasonCodes the list of reason codes to be written into the UNSUBACK packet.
      * @throws NullPointerException     If the list of reason codes is <null>.
      * @throws IllegalArgumentException If the amount of reason codes passed differs from that contained in the packet
      *                                  being manipulated.
