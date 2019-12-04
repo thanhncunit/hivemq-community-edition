@@ -14,14 +14,12 @@ import java.util.function.Supplier;
 public class PingRespOutboundOutputImpl extends AbstractSimpleAsyncOutput<PingRespOutboundOutput>
         implements PingRespOutboundOutput, PluginTaskOutput, Supplier<PingRespOutboundOutputImpl> {
 
-
     public PingRespOutboundOutputImpl(final @NotNull PluginOutPutAsyncer asyncer) {
         super(asyncer);
     }
 
-    @NotNull
     @Override
-    public PingRespOutboundOutputImpl get() {
+    public @NotNull PingRespOutboundOutputImpl get() {
         return this;
     }
 }

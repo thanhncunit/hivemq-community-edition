@@ -300,9 +300,3 @@ public class PingInterceptorHandler extends ChannelDuplexHandler {
         }
     }
 }
-
-
-
-
-
-

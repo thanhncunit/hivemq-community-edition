@@ -14,7 +14,6 @@ import java.util.function.Supplier;
 public class PingReqInboundOutputImpl extends AbstractSimpleAsyncOutput<PingReqInboundOutput>
         implements PingReqInboundOutput, PluginTaskOutput, Supplier<PingReqInboundOutputImpl> {
 
-
     public PingReqInboundOutputImpl(final @NotNull PluginOutPutAsyncer asyncer) {
         super(asyncer);
     }
@@ -23,6 +22,4 @@ public class PingReqInboundOutputImpl extends AbstractSimpleAsyncOutput<PingReqI
     public @NotNull PingReqInboundOutputImpl get() {
         return this;
     }
-
-
 }

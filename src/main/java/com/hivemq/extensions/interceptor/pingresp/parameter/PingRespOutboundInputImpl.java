@@ -13,22 +13,20 @@ import java.util.function.Supplier;
 /**
  * @author Robin Atherton
  */
-public class PingRespOutboundInputImpl implements Supplier<PingRespOutboundInputImpl>,
-        PingRespOutboundInput, PluginTaskInput {
+public class PingRespOutboundInputImpl
+        implements Supplier<PingRespOutboundInputImpl>, PingRespOutboundInput, PluginTaskInput {
 
-    private final @NotNull ConnectionInformation connectionInformation;
     private final @NotNull ClientInformation clientInformation;
+    private final @NotNull ConnectionInformation connectionInformation;
 
-    public PingRespOutboundInputImpl(
-            final @NotNull String clientId,
-            final @NotNull Channel channel) {
-        this.connectionInformation = PluginInformationUtil.getAndSetConnectionInformation(channel);
-        this.clientInformation = PluginInformationUtil.getAndSetClientInformation(channel, clientId);
+    public PingRespOutboundInputImpl(final @NotNull String clientId, final @NotNull Channel channel) {
+        clientInformation = PluginInformationUtil.getAndSetClientInformation(channel, clientId);
+        connectionInformation = PluginInformationUtil.getAndSetConnectionInformation(channel);
     }
 
     @Override
-    public PingRespOutboundInputImpl get() {
-        return this;
+    public @NotNull ClientInformation getClientInformation() {
+        return clientInformation;
     }
 
     @Override
@@ -37,7 +35,7 @@ public class PingRespOutboundInputImpl implements Supplier<PingRespOutboundInput
     }
 
     @Override
-    public @NotNull ClientInformation getClientInformation() {
-        return clientInformation;
+    public @NotNull PingRespOutboundInputImpl get() {
+        return this;
     }
 }
