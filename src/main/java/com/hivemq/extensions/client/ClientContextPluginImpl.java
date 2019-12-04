@@ -16,8 +16,8 @@
 
 package com.hivemq.extensions.client;
 
-import com.hivemq.annotations.Immutable;
-import com.hivemq.annotations.NotNull;
+import com.hivemq.extension.sdk.api.annotations.Immutable;
+import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.client.ClientContext;
 import com.hivemq.extension.sdk.api.interceptor.Interceptor;
 import com.hivemq.extension.sdk.api.interceptor.disconnect.DisconnectInboundInterceptor;
@@ -41,14 +41,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class ClientContextPluginImpl extends AbstractOutput implements ClientContext {
 
-    @NotNull
-    private final IsolatedPluginClassloader pluginClassloader;
+    private final @NotNull IsolatedPluginClassloader pluginClassloader;
+    private final @NotNull ClientContextImpl clientContext;
 
-    @NotNull
-    private final ClientContextImpl clientContext;
+    public ClientContextPluginImpl(
+            final @NotNull IsolatedPluginClassloader pluginClassloader,
+            final @NotNull ClientContextImpl clientContext) {
 
-    public ClientContextPluginImpl(final @NotNull IsolatedPluginClassloader pluginClassloader,
-                                   final @NotNull ClientContextImpl clientContext) {
         this.pluginClassloader = pluginClassloader;
         this.clientContext = clientContext;
     }
@@ -69,14 +68,12 @@ public class ClientContextPluginImpl extends AbstractOutput implements ClientCon
     }
 
     @Override
-    public void addDisconnectInboundInterceptor(
-            final @NotNull DisconnectInboundInterceptor interceptor) {
+    public void addDisconnectInboundInterceptor(final @NotNull DisconnectInboundInterceptor interceptor) {
         clientContext.addInterceptor(checkNotNull(interceptor, "The interceptor must never be null"));
     }
 
     @Override
-    public void addDisconnectOutboundInterceptor(
-            final @NotNull DisconnectOutboundInterceptor interceptor) {
+    public void addDisconnectOutboundInterceptor(final @NotNull DisconnectOutboundInterceptor interceptor) {
         clientContext.addInterceptor(checkNotNull(interceptor, "The interceptor must never be null"));
     }
 
@@ -106,14 +103,12 @@ public class ClientContextPluginImpl extends AbstractOutput implements ClientCon
     }
 
     @Override
-    public void removeDisconnectInboundInterceptor(
-            final @NotNull DisconnectInboundInterceptor interceptor) {
+    public void removeDisconnectInboundInterceptor(final @NotNull DisconnectInboundInterceptor interceptor) {
         clientContext.removeInterceptor(checkNotNull(interceptor, "The interceptor must never be null"));
     }
 
     @Override
-    public void removeDisconnectOutboundInterceptor(
-            final @NotNull DisconnectOutboundInterceptor interceptor) {
+    public void removeDisconnectOutboundInterceptor(final @NotNull DisconnectOutboundInterceptor interceptor) {
         clientContext.removeInterceptor(checkNotNull(interceptor, "The interceptor must never be null"));
     }
 
@@ -159,15 +154,15 @@ public class ClientContextPluginImpl extends AbstractOutput implements ClientCon
     @NotNull
     @Override
     @Immutable
-    public List<DisconnectOutboundInterceptor> getDisconnectOutboundInterceptors() {
-        return clientContext.getDisconnectOutboundInterceptorsForPlugin(pluginClassloader);
+    public List<DisconnectInboundInterceptor> getDisconnectInboundInterceptors() {
+        return clientContext.getDisconnectInboundInterceptorsForPlugin(pluginClassloader);
     }
 
     @NotNull
     @Override
     @Immutable
-    public List<DisconnectInboundInterceptor> getDisconnectInboundInterceptors() {
-        return clientContext.getDisconnectInboundInterceptorsForPlugin(pluginClassloader);
+    public List<DisconnectOutboundInterceptor> getDisconnectOutboundInterceptors() {
+        return clientContext.getDisconnectOutboundInterceptorsForPlugin(pluginClassloader);
     }
 
     @NotNull

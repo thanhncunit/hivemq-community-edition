@@ -16,8 +16,8 @@
 
 package com.hivemq.extensions.client;
 
-import com.hivemq.annotations.Immutable;
-import com.hivemq.annotations.NotNull;
+import com.hivemq.extension.sdk.api.annotations.Immutable;
+import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.interceptor.Interceptor;
 import com.hivemq.extension.sdk.api.interceptor.disconnect.DisconnectInboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.disconnect.DisconnectOutboundInterceptor;
@@ -42,18 +42,14 @@ import java.util.stream.Collectors;
  */
 public class ClientContextImpl {
 
-    @NotNull
-    private final List<Interceptor> interceptorList;
-
-    @NotNull
-    private final ModifiableDefaultPermissions defaultPermissions;
-
-    @NotNull
-    private final HiveMQExtensions hiveMQExtensions;
+    private final @NotNull List<Interceptor> interceptorList;
+    private final @NotNull ModifiableDefaultPermissions defaultPermissions;
+    private final @NotNull HiveMQExtensions hiveMQExtensions;
 
     public ClientContextImpl(
-            @NotNull final HiveMQExtensions hiveMQExtensions,
-            @NotNull final ModifiableDefaultPermissions defaultPermissions) {
+            final @NotNull HiveMQExtensions hiveMQExtensions,
+            final @NotNull ModifiableDefaultPermissions defaultPermissions) {
+
         this.interceptorList = new CopyOnWriteArrayList<>();
         this.hiveMQExtensions = hiveMQExtensions;
         this.defaultPermissions = defaultPermissions;
@@ -63,14 +59,6 @@ public class ClientContextImpl {
         if (!interceptorList.contains(interceptor)) {
             interceptorList.add(interceptor);
         }
-    }
-
-    public void addPingRequestInboundInterceptor(@NotNull final PingReqInboundInterceptor interceptor) {
-        addInterceptor(interceptor);
-    }
-
-    public void addPingResponseOutboundInterceptor(@NotNull final PingRespOutboundInterceptor interceptor) {
-        addInterceptor(interceptor);
     }
 
     public void addPublishInboundInterceptor(@NotNull final PublishInboundInterceptor interceptor) {
@@ -90,6 +78,14 @@ public class ClientContextImpl {
     }
 
     public void addDisconnectOutboundInterceptor(@NotNull final DisconnectOutboundInterceptor interceptor) {
+        addInterceptor(interceptor);
+    }
+
+    public void addPingRequestInboundInterceptor(@NotNull final PingReqInboundInterceptor interceptor) {
+        addInterceptor(interceptor);
+    }
+
+    public void addPingResponseOutboundInterceptor(@NotNull final PingRespOutboundInterceptor interceptor) {
         addInterceptor(interceptor);
     }
 

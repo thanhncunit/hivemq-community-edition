@@ -153,9 +153,6 @@ public class ChannelDependencies {
     private final Provider<IncomingSubscribeHandler> incomingSubscribeHandlerProvider;
 
     @NotNull
-    private final PingInterceptorHandler pingInterceptorHandler;
-
-    @NotNull
     private final PublishOutboundInterceptorHandler publishOutboundInterceptorHandler;
 
     @NotNull
@@ -167,6 +164,8 @@ public class ChannelDependencies {
     @NotNull
     private final DisconnectInterceptorHandler disconnectInterceptorHandler;
 
+    @NotNull
+    private final PingInterceptorHandler pingInterceptorHandler;
 
     @Inject
     public ChannelDependencies(
@@ -240,11 +239,11 @@ public class ChannelDependencies {
         this.incomingPublishHandlerProvider = incomingPublishHandlerProvider;
         this.incomingSubscribeHandlerProvider = incomingSubscribeHandlerProvider;
         this.publishMessageExpiryHandlerProvider = publishMessageExpiryHandlerProvider;
-        this.pingInterceptorHandler = pingInterceptorHandler;
         this.publishOutboundInterceptorHandler = publishOutboundInterceptorHandler;
         this.connectInboundInterceptorHandler = connectInboundInterceptorHandler;
         this.connackOutboundInterceptorHandler = connackOutboundInterceptorHandler;
         this.disconnectInterceptorHandler = disconnectInterceptorHandler;
+        this.pingInterceptorHandler = pingInterceptorHandler;
     }
 
     @NotNull
