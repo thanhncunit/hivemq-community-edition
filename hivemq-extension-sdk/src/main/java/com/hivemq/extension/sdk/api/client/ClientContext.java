@@ -143,6 +143,7 @@ public interface ClientContext {
      * should be removed, has not been added in the first place.
      *
      * @param disconnectInboundInterceptor The implementation of an DisconnectInboundInterceptor.
+     * @throws NullPointerException If the interceptor is null.
      */
     void removeDisconnectInboundInterceptor(@NotNull DisconnectInboundInterceptor disconnectInboundInterceptor);
 
@@ -151,6 +152,7 @@ public interface ClientContext {
      * should be removed, has not been added in the first place.
      *
      * @param disconnectOutboundInterceptor The implementation of an DisconnectOutboundInterceptor.
+     * @throws NullPointerException If the interceptor is null.
      */
     void removeDisconnectOutboundInterceptor(@NotNull DisconnectOutboundInterceptor disconnectOutboundInterceptor);
 
@@ -209,20 +211,20 @@ public interface ClientContext {
     @NotNull List<@NotNull SubscribeInboundInterceptor> getSubscribeInboundInterceptors();
 
     /**
-     * Returns all {@link DisconnectOutboundInterceptor} which are registered for this client by this extension.
-     *
-     * @return List of DisconnectOutboundInterceptors for this client.
-     */
-    @Immutable
-    @NotNull List<@NotNull DisconnectOutboundInterceptor> getDisconnectOutboundInterceptors();
-
-    /**
      * Returns all {@link DisconnectInboundInterceptor} which are registered for this client by this extension.
      *
      * @return List of DisconnectInboundInterceptors for this client.
      */
     @Immutable
     @NotNull List<@NotNull DisconnectInboundInterceptor> getDisconnectInboundInterceptors();
+
+    /**
+     * Returns all {@link DisconnectOutboundInterceptor} which are registered for this client by this extension.
+     *
+     * @return List of DisconnectOutboundInterceptors for this client.
+     */
+    @Immutable
+    @NotNull List<@NotNull DisconnectOutboundInterceptor> getDisconnectOutboundInterceptors();
 
     /**
      * Returns all {@link PingReqInboundInterceptor} which are registered for this client by this extension.
