@@ -132,7 +132,7 @@ public class ChannelDependencies {
     private final MqttDecoders mqttDecoders;
 
     @NotNull
-    private final AuthHandler authHandler;
+    private final Provider<AuthHandler> authHandlerProvider;
 
     @NotNull
     private final Provider<PluginInitializerHandler> pluginInitializerHandlerProvider;
@@ -192,7 +192,7 @@ public class ChannelDependencies {
             @NotNull final SslParameterHandler sslParameterHandler,
             @NotNull final MqttDecoders mqttDecoders,
             @NotNull final EncoderFactory encoderFactory,
-            @NotNull final AuthHandler authHandler,
+            @NotNull final Provider<AuthHandler> authHandlerProvider,
             @NotNull final AuthInProgressMessageHandler authInProgressMessageHandler,
             @NotNull final Provider<PluginInitializerHandler> pluginInitializerHandlerProvider,
             @NotNull final Provider<ClientLifecycleEventHandler> clientLifecycleEventHandlerProvider,
@@ -230,7 +230,7 @@ public class ChannelDependencies {
         this.eventLog = eventLog;
         this.sslParameterHandler = sslParameterHandler;
         this.mqttDecoders = mqttDecoders;
-        this.authHandler = authHandler;
+        this.authHandlerProvider = authHandlerProvider;
         this.authInProgressMessageHandler = authInProgressMessageHandler;
         this.pluginInitializerHandlerProvider = pluginInitializerHandlerProvider;
         this.clientLifecycleEventHandlerProvider = clientLifecycleEventHandlerProvider;
@@ -375,7 +375,7 @@ public class ChannelDependencies {
 
     @NotNull
     public AuthHandler getAuthHandler() {
-        return authHandler;
+        return authHandlerProvider.get();
     }
 
     @NotNull

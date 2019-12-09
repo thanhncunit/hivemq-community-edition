@@ -17,23 +17,17 @@
 package com.hivemq.extension.sdk.api.packets.general;
 
 /**
- * MQTT 5 disconnect and connack reason codes are listed here.
+ * MQTT 5 CONNACK and DISCONNECT reason codes are listed here.
  *
  * @author Florian Limpöck
  * @since 4.0.0
  */
 public enum DisconnectedReasonCode {
 
-    //DISCONNECT reason codes
+    /* **************************
+     *  CONNACK and DISCONNECT  *
+     ************************** */
 
-    /**
-     * @since 4.0.0
-     */
-    NORMAL_DISCONNECTION,
-    /**
-     * @since 4.0.0
-     */
-    DISCONNECT_WITH_WILL_MESSAGE,
     /**
      * @since 4.0.0
      */
@@ -61,27 +55,7 @@ public enum DisconnectedReasonCode {
     /**
      * @since 4.0.0
      */
-    SERVER_SHUTTING_DOWN,
-    /**
-     * @since 4.0.0
-     */
     BAD_AUTHENTICATION_METHOD,
-    /**
-     * @since 4.0.0
-     */
-    KEEP_ALIVE_TIMEOUT,
-    /**
-     * @since 4.0.0
-     */
-    SESSION_TAKEN_OVER,
-    /**
-     * @since 4.0.0
-     */
-    CLIENT_IDENTIFIER_NOT_VALID,
-    /**
-     * @since 4.0.0
-     */
-    TOPIC_FILTER_INVALID,
     /**
      * @since 4.0.0
      */
@@ -89,27 +63,11 @@ public enum DisconnectedReasonCode {
     /**
      * @since 4.0.0
      */
-    RECEIVE_MAXIMUM_EXCEEDED,
-    /**
-     * @since 4.0.0
-     */
-    TOPIC_ALIAS_INVALID,
-    /**
-     * @since 4.0.0
-     */
     PACKET_TOO_LARGE,
     /**
      * @since 4.0.0
      */
-    MESSAGE_RATE_TOO_HIGH,
-    /**
-     * @since 4.0.0
-     */
     QUOTA_EXCEEDED,
-    /**
-     * @since 4.0.0
-     */
-    ADMINISTRATIVE_ACTION,
     /**
      * @since 4.0.0
      */
@@ -130,6 +88,83 @@ public enum DisconnectedReasonCode {
      * @since 4.0.0
      */
     SERVER_MOVED,
+
+    /* ***********
+     *  CONNACK  *
+     *********** */
+
+    /**
+     * Deprecated since 4.3.0, because SUCCESS is never a reason code for a disconnect.
+     *
+     * @since 4.0.0
+     */
+    @Deprecated
+    SUCCESS,
+    /**
+     * @since 4.0.0
+     */
+    UNSUPPORTED_PROTOCOL_VERSION,
+    /**
+     * @since 4.0.0
+     */
+    CLIENT_IDENTIFIER_NOT_VALID,
+    /**
+     * @since 4.0.0
+     */
+    BAD_USER_NAME_OR_PASSWORD,
+    /**
+     * @since 4.0.0
+     */
+    SERVER_UNAVAILABLE,
+    /**
+     * @since 4.0.0
+     */
+    BANNED,
+
+    /* **************
+     *  DISCONNECT  *
+     ************** */
+
+    /**
+     * @since 4.0.0
+     */
+    NORMAL_DISCONNECTION,
+    /**
+     * @since 4.0.0
+     */
+    DISCONNECT_WITH_WILL_MESSAGE,
+    /**
+     * @since 4.0.0
+     */
+    SERVER_SHUTTING_DOWN,
+    /**
+     * @since 4.0.0
+     */
+    KEEP_ALIVE_TIMEOUT,
+    /**
+     * @since 4.0.0
+     */
+    SESSION_TAKEN_OVER,
+    /**
+     * @since 4.0.0
+     */
+    TOPIC_FILTER_INVALID,
+    /**
+     * @since 4.0.0
+     */
+    RECEIVE_MAXIMUM_EXCEEDED,
+    /**
+     * @since 4.0.0
+     */
+    TOPIC_ALIAS_INVALID,
+    /**
+     * @since 4.0.0
+     */
+    MESSAGE_RATE_TOO_HIGH,
+    /**
+     * @since 4.0.0
+     */
+    ADMINISTRATIVE_ACTION,
     /**
      * @since 4.0.0
      */
@@ -149,28 +184,6 @@ public enum DisconnectedReasonCode {
     /**
      * @since 4.0.0
      */
-    WILDCARD_SUBSCRIPTION_NOT_SUPPORTED,
+    WILDCARD_SUBSCRIPTION_NOT_SUPPORTED
 
-
-    //Remaining CONNACK reason codes
-    /**
-     * @since 4.0.0
-     */
-    SUCCESS,
-    /**
-     * @since 4.0.0
-     */
-    UNSUPPORTED_PROTOCOL_VERSION,
-    /**
-     * @since 4.0.0
-     */
-    BAD_USER_NAME_OR_PASSWORD,
-    /**
-     * @since 4.0.0
-     */
-    SERVER_UNAVAILABLE,
-    /**
-     * @since 4.0.0
-     */
-    BANNED
 }

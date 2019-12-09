@@ -15,6 +15,7 @@
  */
 package com.hivemq.extension.sdk.api.auth.parameter;
 
+import com.hivemq.extension.sdk.api.annotations.DoNotImplement;
 import com.hivemq.extension.sdk.api.annotations.NotNull;
 
 /**
@@ -24,6 +25,7 @@ import com.hivemq.extension.sdk.api.annotations.NotNull;
  * @author Lukas Brandl
  * @since 4.2.0
  */
+@DoNotImplement
 public interface ModifiableClientSettings {
 
     /**

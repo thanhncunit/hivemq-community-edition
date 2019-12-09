@@ -200,7 +200,7 @@ public class ChannelDependenciesTest {
                 sslParameterHandler,
                 mqttDecoders,
                 encoderFactory,
-                authHandler,
+                () -> authHandler,
                 authInProgressMessageHandler,
                 () -> pluginInitializerHandler,
                 () -> clientLifecycleEventHandler,

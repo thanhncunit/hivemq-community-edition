@@ -133,8 +133,7 @@ public interface ClientService {
      *                                  from the server to a client.
      * @see DisconnectReasonCode What reason codes exist for outbound disconnect packets from the server to a
      *         client.
-     * @since 4.3.0
-     */
+    */
     @NotNull CompletableFuture<Boolean> disconnectClient(
             @NotNull String clientId, boolean preventWillMessage,
             @Nullable DisconnectReasonCode reasonCode, @Nullable String reasonString);
