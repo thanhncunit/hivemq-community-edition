@@ -27,11 +27,6 @@ public class ModifiablePubrecPacketImplTest {
         modifiablePubrecPacket = new ModifiablePubrecPacketImpl(fullConfigurationService, fullMqtt5Pubrec);
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void test_set_reason_string_to_success_code() {
-        modifiablePubrecPacket.setReasonString("reason");
-    }
-
     @Test
     public void test_set_reason_string_to_failed() {
         final PUBREC pubrec =

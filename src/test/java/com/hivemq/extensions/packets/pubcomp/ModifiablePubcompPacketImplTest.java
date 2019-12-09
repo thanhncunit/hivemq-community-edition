@@ -27,11 +27,6 @@ public class ModifiablePubcompPacketImplTest {
         modifiablePubcompPacket = new ModifiablePubcompPacketImpl(fullConfigurationService, fullMqtt5Pubcomp);
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void test_set_reason_string_to_success_code() {
-        modifiablePubcompPacket.setReasonString("reason");
-    }
-
     @Test
     public void test_set_reason_string_to_failed() {
         final PUBCOMP pubcomp = new PUBCOMP(1, Mqtt5PubCompReasonCode.PACKET_IDENTIFIER_NOT_FOUND, null,

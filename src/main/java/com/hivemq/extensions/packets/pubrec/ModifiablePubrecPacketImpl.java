@@ -12,6 +12,7 @@ import com.hivemq.extensions.packets.general.InternalUserProperties;
 import com.hivemq.extensions.packets.general.ModifiableUserPropertiesImpl;
 import com.hivemq.extensions.services.builder.PluginBuilderUtil;
 import com.hivemq.mqtt.message.pubrec.PUBREC;
+import com.hivemq.mqtt.message.reason.Mqtt5PubRecReasonCode;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -70,13 +71,14 @@ public class ModifiablePubrecPacketImpl implements ModifiablePubrecPacket {
     @Override
     public void setReasonCode(final @NotNull AckReasonCode reasonCode) {
         Preconditions.checkNotNull(reasonCode, "Reason code must never be null");
-        final boolean switched = (reasonCode == AckReasonCode.SUCCESS && this.reasonCode != AckReasonCode.SUCCESS) ||
-                (reasonCode != AckReasonCode.SUCCESS && this.reasonCode == AckReasonCode.SUCCESS);
-        Preconditions.checkState(
-                !switched, "Reason code must not switch from successful to unsuccessful or vice versa");
         if (this.reasonCode == reasonCode) {
             return;
         }
+        final Mqtt5PubRecReasonCode newReasonCode = Mqtt5PubRecReasonCode.valueOf(reasonCode.name());
+        final Mqtt5PubRecReasonCode oldReasonCode = Mqtt5PubRecReasonCode.valueOf(this.reasonCode.name());
+        final boolean switched = newReasonCode.isError() != oldReasonCode.isError();
+        Preconditions.checkState(
+                !switched, "Reason code must not switch from successful to unsuccessful or vice versa");
         this.reasonCode = reasonCode;
         modified = true;
     }
@@ -88,11 +90,6 @@ public class ModifiablePubrecPacketImpl implements ModifiablePubrecPacket {
 
     @Override
     public void setReasonString(final @Nullable String reasonString) {
-        if (reasonString != null) {
-            Preconditions.checkState(
-                    reasonCode != AckReasonCode.SUCCESS,
-                    "Reason string must not be set when reason code is successful");
-        }
         PluginBuilderUtil.checkReasonString(reasonString, configurationService.securityConfiguration().validateUTF8());
         if (Objects.equals(this.reasonString, reasonString)) {
             return;

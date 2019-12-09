@@ -1,6 +1,5 @@
 package com.hivemq.extensions.packets.pubrel;
 
-import com.google.common.base.Preconditions;
 import com.hivemq.configuration.service.FullConfigurationService;
 import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.annotations.Nullable;
@@ -74,11 +73,6 @@ public class ModifiablePubrelPacketImpl implements ModifiablePubrelPacket {
 
     @Override
     public void setReasonString(final @Nullable String reasonString) {
-        if (reasonString != null) {
-            Preconditions.checkState(
-                    getReasonCode() != PubrelReasonCode.SUCCESS,
-                    "Reason string must not be set when reason code is successful");
-        }
         PluginBuilderUtil.checkReasonString(reasonString, configurationService.securityConfiguration().validateUTF8());
         if (Objects.equals(this.reasonString, reasonString)) {
             return;

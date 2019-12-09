@@ -27,11 +27,6 @@ public class ModifiablePubackPacketImplTest {
         modifiablePubackPacket = new ModifiablePubackPacketImpl(fullConfigurationService, fullMqtt5Puback);
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void test_set_reason_string_to_success_code() {
-        modifiablePubackPacket.setReasonString("reason");
-    }
-
     @Test
     public void test_set_reason_string_to_failed() {
         final PUBACK puback = new PUBACK(1, Mqtt5PubAckReasonCode.UNSPECIFIED_ERROR, null, Mqtt5UserProperties.NO_USER_PROPERTIES);

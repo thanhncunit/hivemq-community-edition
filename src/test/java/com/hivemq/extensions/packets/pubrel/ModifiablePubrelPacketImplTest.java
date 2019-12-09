@@ -26,11 +26,6 @@ public class ModifiablePubrelPacketImplTest {
         modifiablePubrelPacket = new ModifiablePubrelPacketImpl(fullConfigurationService, fullMqtt5Pubrel);
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void test_set_reason_string_to_success_code() {
-        modifiablePubrelPacket.setReasonString("reason");
-    }
-
     @Test
     public void test_set_reason_string_to_failed() {
         final PUBREL pubrel = new PUBREL(1, Mqtt5PubRelReasonCode.PACKET_IDENTIFIER_NOT_FOUND, null,
