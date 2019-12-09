@@ -68,6 +68,10 @@ public class ClientContextImpl {
         addInterceptor(interceptor);
     }
 
+    public void addPublishOutboundInterceptor(@NotNull final PublishOutboundInterceptor interceptor) {
+        addInterceptor(interceptor);
+    }
+
     public void addSubscribeInboundInterceptor(@NotNull final SubscribeInboundInterceptor interceptor) {
         addInterceptor(interceptor);
     }
@@ -80,16 +84,12 @@ public class ClientContextImpl {
         addInterceptor(interceptor);
     }
 
-    public void removePublishInboundInterceptor(@NotNull final PublishInboundInterceptor interceptor) {
-        removeInterceptor(interceptor);
-    }
-
-    public void addPublishOutboundInterceptor(@NotNull final PublishOutboundInterceptor interceptor) {
-        addInterceptor(interceptor);
-    }
-
     public void addSubackOutboundInterceptor(@NotNull final SubackOutboundInterceptor interceptor) {
         addInterceptor(interceptor);
+    }
+
+    public void removePublishInboundInterceptor(@NotNull final PublishInboundInterceptor interceptor) {
+        removeInterceptor(interceptor);
     }
 
     public void removePublishOutboundInterceptor(@NotNull final PublishOutboundInterceptor interceptor) {
@@ -100,15 +100,15 @@ public class ClientContextImpl {
         removeInterceptor(interceptor);
     }
 
-    public void removeSubackOutboundInterceptor(@NotNull final SubackOutboundInterceptor interceptor) {
-        removeInterceptor(interceptor);
-    }
-
     public void removeDisconnectInboundInterceptor(@NotNull final DisconnectInboundInterceptor interceptor) {
         removeInterceptor(interceptor);
     }
 
     public void removeDisconnectOutboundInterceptor(@NotNull final DisconnectOutboundInterceptor interceptor) {
+        removeInterceptor(interceptor);
+    }
+
+    public void removeSubackOutboundInterceptor(@NotNull final SubackOutboundInterceptor interceptor) {
         removeInterceptor(interceptor);
     }
 
@@ -146,17 +146,6 @@ public class ClientContextImpl {
 
     @NotNull
     @Immutable
-    public List<SubscribeInboundInterceptor> getSubscribeInboundInterceptorsForPlugin(
-            @NotNull final IsolatedPluginClassloader pluginClassloader) {
-        return interceptorList.stream()
-                .filter(interceptor -> interceptor.getClass().getClassLoader().equals(pluginClassloader))
-                .filter(interceptor -> interceptor instanceof SubscribeInboundInterceptor)
-                .map(interceptor -> (SubscribeInboundInterceptor) interceptor)
-                .collect(Collectors.toUnmodifiableList());
-    }
-
-    @NotNull
-    @Immutable
     public List<PublishInboundInterceptor> getPublishInboundInterceptors() {
         return interceptorList.stream()
                 .filter(interceptor -> interceptor instanceof PublishInboundInterceptor)
@@ -185,6 +174,17 @@ public class ClientContextImpl {
                 .filter(this::hasPluginForClassloader)
                 .sorted(Comparator.comparingInt(this::comparePluginPriority).reversed())
                 .map(interceptor -> (PublishOutboundInterceptor) interceptor)
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    @NotNull
+    @Immutable
+    public List<SubscribeInboundInterceptor> getSubscribeInboundInterceptorsForPlugin(
+            @NotNull final IsolatedPluginClassloader pluginClassloader) {
+        return interceptorList.stream()
+                .filter(interceptor -> interceptor.getClass().getClassLoader().equals(pluginClassloader))
+                .filter(interceptor -> interceptor instanceof SubscribeInboundInterceptor)
+                .map(interceptor -> (SubscribeInboundInterceptor) interceptor)
                 .collect(Collectors.toUnmodifiableList());
     }
 

@@ -1,7 +1,7 @@
 package com.hivemq.extensions.handler;
 
-import com.hivemq.annotations.NotNull;
 import com.hivemq.configuration.service.FullConfigurationService;
+import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.interceptor.suback.SubackOutboundInterceptor;
 import com.hivemq.extensions.HiveMQExtension;
 import com.hivemq.extensions.HiveMQExtensions;
@@ -34,11 +34,8 @@ public class SubackOutboundInterceptorHandler extends ChannelOutboundHandlerAdap
     private static final Logger log = LoggerFactory.getLogger(SubackOutboundInterceptorHandler.class);
 
     private final @NotNull FullConfigurationService configurationService;
-
     private final @NotNull PluginOutPutAsyncer asyncer;
-
     private final @NotNull HiveMQExtensions hiveMQExtensions;
-
     private final @NotNull PluginTaskExecutorService executorService;
 
     @Inject
@@ -47,6 +44,7 @@ public class SubackOutboundInterceptorHandler extends ChannelOutboundHandlerAdap
             final @NotNull PluginOutPutAsyncer asyncer,
             final @NotNull HiveMQExtensions hiveMQExtensions,
             final @NotNull PluginTaskExecutorService executorService) {
+
         this.configurationService = configurationService;
         this.asyncer = asyncer;
         this.hiveMQExtensions = hiveMQExtensions;
@@ -55,8 +53,9 @@ public class SubackOutboundInterceptorHandler extends ChannelOutboundHandlerAdap
 
     @Override
     public void write(
-            final @NotNull ChannelHandlerContext ctx, final @NotNull Object msg, final @NotNull ChannelPromise promise)
-            throws Exception {
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull Object msg,
+            final @NotNull ChannelPromise promise) {
 
         if (!(msg instanceof SUBACK)) {
             ctx.write(msg, promise);
@@ -88,12 +87,12 @@ public class SubackOutboundInterceptorHandler extends ChannelOutboundHandlerAdap
             return;
         }
 
-        final SubackOutboundOutputImpl output = new SubackOutboundOutputImpl(configurationService, asyncer, suback);
         final SubackOutboundInputImpl input = new SubackOutboundInputImpl(clientId, channel, suback);
+        final SubackOutboundOutputImpl output = new SubackOutboundOutputImpl(configurationService, asyncer, suback);
 
         final SubAckOutboundInterceptorContext interceptorContext =
                 new SubAckOutboundInterceptorContext(
-                        SubAckOutboundInterceptorTask.class, clientId, input, ctx, promise, interceptors.size());
+                        SubackOutboundInterceptorTask.class, clientId, input, ctx, promise, interceptors.size());
 
         for (final SubackOutboundInterceptor interceptor : interceptors) {
 
@@ -105,8 +104,8 @@ public class SubackOutboundInterceptorHandler extends ChannelOutboundHandlerAdap
                 continue;
             }
 
-            final SubAckOutboundInterceptorTask interceptorTask =
-                    new SubAckOutboundInterceptorTask(interceptor, extension.getId());
+            final SubackOutboundInterceptorTask interceptorTask =
+                    new SubackOutboundInterceptorTask(interceptor, extension.getId());
 
             executorService.handlePluginInOutTaskExecution(interceptorContext, input, output, interceptorTask);
         }
@@ -120,13 +119,14 @@ public class SubackOutboundInterceptorHandler extends ChannelOutboundHandlerAdap
         private final int interceptorCount;
         private final @NotNull AtomicInteger counter;
 
-        public SubAckOutboundInterceptorContext(
-                @NotNull final Class<?> taskClazz,
-                @NotNull final String identifier,
-                @NotNull final SubackOutboundInputImpl input,
-                @NotNull final ChannelHandlerContext ctx,
-                @NotNull final ChannelPromise promise,
+        SubAckOutboundInterceptorContext(
+                final @NotNull Class<?> taskClazz,
+                final @NotNull String identifier,
+                final @NotNull SubackOutboundInputImpl input,
+                final @NotNull ChannelHandlerContext ctx,
+                final @NotNull ChannelPromise promise,
                 final int interceptorCount) {
+
             super(taskClazz, identifier);
             this.input = input;
             this.ctx = ctx;
@@ -136,8 +136,7 @@ public class SubackOutboundInterceptorHandler extends ChannelOutboundHandlerAdap
         }
 
         @Override
-        public void pluginPost(
-                final @NotNull SubackOutboundOutputImpl output) {
+        public void pluginPost(final @NotNull SubackOutboundOutputImpl output) {
             if (output.isTimedOut()) {
                 log.debug("Async timeout on outbound SUBACK interception.");
                 output.update(input.getSubackPacket());
@@ -155,30 +154,31 @@ public class SubackOutboundInterceptorHandler extends ChannelOutboundHandlerAdap
         }
     }
 
-    private static class SubAckOutboundInterceptorTask
+    private static class SubackOutboundInterceptorTask
             implements PluginInOutTask<SubackOutboundInputImpl, SubackOutboundOutputImpl> {
 
         private final @NotNull SubackOutboundInterceptor interceptor;
-        private final @NotNull String pluginId;
+        private final @NotNull String extensionId;
 
-        public SubAckOutboundInterceptorTask(
-                @NotNull final SubackOutboundInterceptor interceptor,
-                @NotNull final String pluginId) {
+        SubackOutboundInterceptorTask(
+                final @NotNull SubackOutboundInterceptor interceptor,
+                final @NotNull String extensionId) {
+
             this.interceptor = interceptor;
-            this.pluginId = pluginId;
+            this.extensionId = extensionId;
         }
-
 
         @Override
         public @NotNull SubackOutboundOutputImpl apply(
                 final @NotNull SubackOutboundInputImpl input,
                 final @NotNull SubackOutboundOutputImpl output) {
+
             try {
                 interceptor.onOutboundSuback(input, output);
             } catch (final Throwable e) {
                 log.warn(
-                        "Uncaught exception was thrown from extension with id \"{}\" on outbound subAck interception. " +
-                                "Extensions are responsible to handle their own exceptions.", pluginId);
+                        "Uncaught exception was thrown from extension with id \"{}\" on outbound SUBACK interception. " +
+                                "Extensions are responsible to handle their own exceptions.", extensionId);
                 log.debug("Original exception: ", e);
                 output.update(input.getSubackPacket());
             }

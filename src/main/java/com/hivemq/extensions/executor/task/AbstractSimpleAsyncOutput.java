@@ -82,7 +82,7 @@ public class AbstractSimpleAsyncOutput<T> implements PluginTaskOutput, SimpleAsy
     }
 
     @Override
-    public @Nullable SettableFuture<Boolean> getAsyncFuture() {
+    public @NotNull SettableFuture<Boolean> getAsyncFuture() {
         return asyncFuture;
     }
 

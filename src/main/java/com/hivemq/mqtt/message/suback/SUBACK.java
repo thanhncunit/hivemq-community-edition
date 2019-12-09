@@ -29,7 +29,6 @@ import com.hivemq.mqtt.message.mqtt5.MqttMessageWithUserProperties.MqttMessageWi
 import com.hivemq.mqtt.message.mqtt5.MqttUserProperty;
 import com.hivemq.mqtt.message.reason.Mqtt5SubAckReasonCode;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,47 +42,57 @@ import java.util.List;
 public class SUBACK extends MqttMessageWithIdAndReasonCodes<Mqtt5SubAckReasonCode> implements Mqtt3SUBACK, Mqtt5SUBACK {
 
     //MQTT 3
-    public SUBACK(final int packetIdentifier, @NotNull final Mqtt5SubAckReasonCode... entries) {
+    public SUBACK(final int packetIdentifier, final @NotNull Mqtt5SubAckReasonCode... entries) {
         super(packetIdentifier, ImmutableList.copyOf(entries), null, Mqtt5UserProperties.NO_USER_PROPERTIES);
     }
 
     //MQTT 3
-    public SUBACK(final int packetIdentifier, @NotNull final List<Mqtt5SubAckReasonCode> grantedQos) {
+    public SUBACK(final int packetIdentifier, final @NotNull List<Mqtt5SubAckReasonCode> grantedQos) {
         this(packetIdentifier, grantedQos, null, Mqtt5UserProperties.NO_USER_PROPERTIES);
     }
 
     //MQTT 5
-    public SUBACK(final int packetIdentifier, @NotNull final List<Mqtt5SubAckReasonCode> grantedQos, @Nullable final String reasonString) {
+    public SUBACK(
+            final int packetIdentifier,
+            final @NotNull List<Mqtt5SubAckReasonCode> grantedQos,
+            final @Nullable String reasonString) {
         this(packetIdentifier, grantedQos, reasonString, Mqtt5UserProperties.NO_USER_PROPERTIES);
     }
 
     //MQTT 5
-    public SUBACK(final int packetIdentifier, @NotNull final List<Mqtt5SubAckReasonCode> grantedQos, @Nullable final String reasonString, @NotNull final Mqtt5UserProperties userProperties) {
+    public SUBACK(
+            final int packetIdentifier,
+            final @NotNull List<Mqtt5SubAckReasonCode> grantedQos,
+            final @Nullable String reasonString,
+            final @NotNull Mqtt5UserProperties userProperties) {
         super(packetIdentifier, ImmutableList.copyOf(grantedQos), reasonString, userProperties);
     }
 
     //MQTT 5
-    public SUBACK(final int packetIdentifier, @Nullable final String reasonString, @NotNull final Mqtt5UserProperties userProperties, @NotNull final Mqtt5SubAckReasonCode... grantedQos) {
+    public SUBACK(
+            final int packetIdentifier,
+            final @Nullable String reasonString,
+            final @NotNull Mqtt5UserProperties userProperties,
+            final @NotNull Mqtt5SubAckReasonCode... grantedQos) {
         super(packetIdentifier, ImmutableList.copyOf(grantedQos), reasonString, userProperties);
     }
 
-    @NotNull
     @Override
-    public MessageType getType() {
+    public @NotNull MessageType getType() {
         return MessageType.SUBACK;
     }
 
     public static @NotNull SUBACK createSubAckFrom(final @NotNull SubackPacket packet) {
-        final List<Mqtt5SubAckReasonCode> subAckReasonCodes = new ArrayList<>();
+        final ImmutableList.Builder<Mqtt5SubAckReasonCode> reasonCodesBuilder = ImmutableList.builder();
         for (final SubackReasonCode code : packet.getReasonCodes()) {
-            subAckReasonCodes.add(Mqtt5SubAckReasonCode.valueOf(code.name()));
+            reasonCodesBuilder.add(Mqtt5SubAckReasonCode.valueOf(code.name()));
         }
-        final String reasonString = packet.getReasonString();
+        final String reasonString = packet.getReasonString().orElse(null);
         final ImmutableList.Builder<MqttUserProperty> userPropertyBuilder = ImmutableList.builder();
         for (final UserProperty userProperty : packet.getUserProperties().asList()) {
             userPropertyBuilder.add(new MqttUserProperty(userProperty.getName(), userProperty.getValue()));
         }
         final Mqtt5UserProperties mqtt5UserProperties = Mqtt5UserProperties.of(userPropertyBuilder.build());
-        return new SUBACK(packet.getPacketIdentifier(), subAckReasonCodes, reasonString, mqtt5UserProperties);
+        return new SUBACK(packet.getPacketIdentifier(), reasonCodesBuilder.build(), reasonString, mqtt5UserProperties);
     }
 }

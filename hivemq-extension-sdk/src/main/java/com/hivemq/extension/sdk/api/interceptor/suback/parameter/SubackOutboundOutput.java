@@ -1,5 +1,6 @@
 package com.hivemq.extension.sdk.api.interceptor.suback.parameter;
 
+import com.hivemq.extension.sdk.api.annotations.DoNotImplement;
 import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.async.Async;
 import com.hivemq.extension.sdk.api.async.SimpleAsyncOutput;
@@ -13,10 +14,10 @@ import java.time.Duration;
  * SUBACK interception.
  * <p>
  * It can be used to modify an outbound SUBACK packet.
- * <p>
  *
  * @author Robin Atherton
  **/
+@DoNotImplement
 public interface SubackOutboundOutput extends SimpleAsyncOutput<SubackOutboundOutput> {
 
     /**
@@ -24,8 +25,7 @@ public interface SubackOutboundOutput extends SimpleAsyncOutput<SubackOutboundOu
      *
      * @return A {@link ModifiableSubackPacket}
      */
-    @NotNull
-    ModifiableSubackPacket getSubackPacket();
+    @NotNull ModifiableSubackPacket getSubackPacket();
 
     /**
      * If the timeout is expired before {@link Async#resume()} is called then the outcome is handled as failed. This
@@ -38,5 +38,4 @@ public interface SubackOutboundOutput extends SimpleAsyncOutput<SubackOutboundOu
      */
     @Override
     @NotNull Async<SubackOutboundOutput> async(@NotNull Duration timeout);
-
 }

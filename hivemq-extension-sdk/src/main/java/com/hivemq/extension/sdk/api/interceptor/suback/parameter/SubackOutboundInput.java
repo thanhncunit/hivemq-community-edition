@@ -21,6 +21,5 @@ public interface SubackOutboundInput extends ClientBasedInput {
      *
      * @return An unmodifiable {@link SubackPacket}.
      */
-    @NotNull
-    @Immutable SubackPacket getSubackPacket();
+    @Immutable @NotNull SubackPacket getSubackPacket();
 }

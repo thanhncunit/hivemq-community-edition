@@ -1,48 +1,50 @@
 package com.hivemq.extension.sdk.api.packets.suback;
 
+import com.hivemq.extension.sdk.api.annotations.DoNotImplement;
+import com.hivemq.extension.sdk.api.annotations.Immutable;
 import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.packets.general.UserProperties;
 import com.hivemq.extension.sdk.api.packets.subscribe.SubackReasonCode;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Represents a SUBACK packet.
  * <p>
- * Contains all values of an MQTT 5 SUBACK, but will also be used to represent MQTT 3 suback messages.
+ * Contains all values of an MQTT 5 SUBACK, but will also be used to represent MQTT 3 SUBACK messages.
  *
  * @author Robin Atherton
  */
+@Immutable
+@DoNotImplement
 public interface SubackPacket {
 
     /**
-     * Represents the return codes for the QoS levels of the different Topics contained in the corresponding SUBSCRIBE
-     * message as well as potential failure codes.
+     * The reason codes for each subscription in the corresponding SUBSCRIBE message.
      *
-     * @return The reason codes for the subscribed topics.
+     * @return The reason codes for the subscriptions.
      */
-    @NotNull List<SubackReasonCode> getReasonCodes();
+    @Immutable @NotNull List<@NotNull SubackReasonCode> getReasonCodes();
 
     /**
-     * Represents the return codes for the QoS levels of the different Topics contained in the corresponding SUBSCRIBE
-     * message as well as potential failure codes as a String. Made for user analysis.
+     * The optional reason string of this SUBACK packet.
      *
-     * @return The reason codes as a String.
+     * @return The optional reason string.
      */
-    @NotNull String getReasonString();
+    @NotNull Optional<String> getReasonString();
 
     /**
-     * The packet identifier of the SUBSCRIBE packet.
+     * The packet identifier of this SUBACK packet.
      *
      * @return The packet identifier.
-     * @since 4.2.0
      */
     int getPacketIdentifier();
 
     /**
-     * The user properties from the DISCONNECT packet.
+     * The {@link UserProperties} of this SUBACK packet.
      *
-     * @return The {@link UserProperties} of the DISCONNECT packet.
+     * @return The user properties.
      */
-    @NotNull UserProperties getUserProperties();
+    @Immutable @NotNull UserProperties getUserProperties();
 }

@@ -1,7 +1,7 @@
 package com.hivemq.extensions.interceptor.suback.parameter;
 
-import com.hivemq.annotations.NotNull;
 import com.hivemq.configuration.service.FullConfigurationService;
+import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.interceptor.suback.parameter.SubackOutboundOutput;
 import com.hivemq.extension.sdk.api.packets.suback.SubackPacket;
 import com.hivemq.extensions.executor.PluginOutPutAsyncer;
@@ -15,8 +15,7 @@ import java.util.function.Supplier;
  * @author Robin Atherton
  */
 public class SubackOutboundOutputImpl extends AbstractSimpleAsyncOutput<SubackOutboundOutput>
-        implements SubackOutboundOutput,
-        Supplier<SubackOutboundOutputImpl> {
+        implements SubackOutboundOutput, Supplier<SubackOutboundOutputImpl> {
 
     private final @NotNull FullConfigurationService configurationService;
     private @NotNull ModifiableSubackPacketImpl subAckPacket;
@@ -25,6 +24,7 @@ public class SubackOutboundOutputImpl extends AbstractSimpleAsyncOutput<SubackOu
             final @NotNull FullConfigurationService configurationService,
             final @NotNull PluginOutPutAsyncer asyncer,
             final @NotNull SUBACK suback) {
+
         super(asyncer);
         this.configurationService = configurationService;
         this.subAckPacket = new ModifiableSubackPacketImpl(configurationService, suback);
@@ -40,7 +40,7 @@ public class SubackOutboundOutputImpl extends AbstractSimpleAsyncOutput<SubackOu
         return this;
     }
 
-    public void update(final @NotNull SubackPacket pubrecPacket) {
-        this.subAckPacket = new ModifiableSubackPacketImpl(configurationService, pubrecPacket);
+    public void update(final @NotNull SubackPacket subackPacket) {
+        this.subAckPacket = new ModifiableSubackPacketImpl(configurationService, subackPacket);
     }
 }
