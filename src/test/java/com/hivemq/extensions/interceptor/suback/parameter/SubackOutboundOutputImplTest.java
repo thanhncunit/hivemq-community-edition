@@ -43,7 +43,7 @@ public class SubackOutboundOutputImplTest {
         assertEquals(subAck.getPacketIdentifier(), modifiableSubAckPacket.getPacketIdentifier());
         assertEquals(
                 subAck.getUserProperties().size(), modifiableSubAckPacket.getUserProperties().asList().size());
-        assertEquals(subAck.getReasonString(), modifiableSubAckPacket.getReasonString());
+        assertEquals(subAck.getReasonString(), modifiableSubAckPacket.getReasonString().get());
         final List<SubackReasonCode> reasonCodes = modifiableSubAckPacket.getReasonCodes();
         for (int i = 0; i < reasonCodes.size(); i++) {
             assertEquals(subAck.getReasonCodes().get(i), Mqtt5SubAckReasonCode.valueOf(reasonCodes.get(i).name()));

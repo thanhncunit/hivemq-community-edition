@@ -55,7 +55,7 @@ public class ModifiableSubackPacketImplTest {
         packet.setReasonString("testReasonString");
         packet.setReasonCodes(reasonCodes);
 
-        assertEquals("testReasonString", packet.getReasonString());
+        assertEquals("testReasonString", packet.getReasonString().get());
         assertEquals(SubackReasonCode.GRANTED_QOS_1, packet.getReasonCodes().get(0));
         assertEquals(SubackReasonCode.IMPLEMENTATION_SPECIFIC_ERROR, packet.getReasonCodes().get(1));
         assertEquals(SubackReasonCode.NOT_AUTHORIZED, packet.getReasonCodes().get(2));
@@ -72,9 +72,10 @@ public class ModifiableSubackPacketImplTest {
         assertTrue(packet.isModified());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_set_reason_string_null() {
         packet.setReasonString(null);
+        assertTrue(packet.isModified());
     }
 
     @Test(expected = NullPointerException.class)
