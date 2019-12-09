@@ -1,6 +1,7 @@
 package com.hivemq.extension.sdk.api.interceptor.unsuback;
 
 import com.hivemq.extension.sdk.api.annotations.NotNull;
+import com.hivemq.extension.sdk.api.interceptor.Interceptor;
 import com.hivemq.extension.sdk.api.interceptor.unsuback.parameter.UnsubackOutboundInput;
 import com.hivemq.extension.sdk.api.interceptor.unsuback.parameter.UnsubackOutboundOutput;
 
@@ -14,7 +15,7 @@ import com.hivemq.extension.sdk.api.interceptor.unsuback.parameter.UnsubackOutbo
  *
  * @author Robin Atherton
  */
-public interface UnsubackOutboundInterceptor {
+public interface UnsubackOutboundInterceptor extends Interceptor {
 
     /**
      * When a {@link UnsubackOutboundInterceptor} is set through any extension, this method gets called for every

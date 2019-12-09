@@ -168,6 +168,8 @@ public class ChannelDependenciesTest {
     @Mock
     private DisconnectInterceptorHandler disconnectInterceptorHandler;
 
+    @Mock
+    private UnsubackOutboundInterceptorHandler unsubackOutboundInterceptorHandler;
 
     @Before
     public void setUp() throws Exception {
@@ -210,7 +212,8 @@ public class ChannelDependenciesTest {
                 publishOutboundInterceptorHandler,
                 connectInterceptorHandler,
                 connackOutboundInterceptorHandler,
-                disconnectInterceptorHandler
+                disconnectInterceptorHandler,
+                unsubackOutboundInterceptorHandler
         );
 
     }

@@ -19,6 +19,7 @@ import io.netty.channel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -40,6 +41,7 @@ public class UnsubackOutboundInterceptorHandler extends ChannelOutboundHandlerAd
 
     private final @NotNull PluginTaskExecutorService executorService;
 
+    @Inject
     public UnsubackOutboundInterceptorHandler(
             @NotNull final FullConfigurationService configurationService,
             @NotNull final PluginOutPutAsyncer asyncer,
@@ -54,8 +56,6 @@ public class UnsubackOutboundInterceptorHandler extends ChannelOutboundHandlerAd
     @Override
     public void write(final ChannelHandlerContext ctx, @NotNull final Object msg, @NotNull final ChannelPromise promise)
             throws Exception {
-        super.write(ctx, msg, promise);
-
         if (!(msg instanceof UNSUBACK)) {
             ctx.write(msg, promise);
             return;
@@ -96,6 +96,7 @@ public class UnsubackOutboundInterceptorHandler extends ChannelOutboundHandlerAd
                         UnsubackOutboundInterceptorTask.class, clientId, input, ctx, promise, interceptors.size());
 
         for (final UnsubackOutboundInterceptor interceptor : interceptors) {
+
             final HiveMQExtension extension = hiveMQExtensions.getExtensionForClassloader(
                     (IsolatedPluginClassloader) interceptor.getClass().getClassLoader());
 
@@ -138,7 +139,7 @@ public class UnsubackOutboundInterceptorHandler extends ChannelOutboundHandlerAd
         public void pluginPost(
                 final @NotNull UnsubackOutboundOutputImpl output) {
             if (output.isTimedOut()) {
-                log.debug("Async timeout on outbound SUBACK interception.");
+                log.debug("Async timeout on outbound UNSUBACK interception.");
                 output.update(input.getUnsubackPacket());
             } else if (output.getUnsubackPacket().isModified()) {
                 input.update(output.getUnsubackPacket());

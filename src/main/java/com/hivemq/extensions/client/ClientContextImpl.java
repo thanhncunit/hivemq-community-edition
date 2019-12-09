@@ -80,6 +80,10 @@ public class ClientContextImpl {
         addInterceptor(interceptor);
     }
 
+    public void addUnsubackOutboundInterceptor(@NotNull final UnsubackOutboundInterceptor interceptor) {
+        addInterceptor(interceptor);
+    }
+
     public void removePublishInboundInterceptor(@NotNull final PublishInboundInterceptor interceptor) {
         removeInterceptor(interceptor);
     }

@@ -74,8 +74,7 @@ public class ModifiableUnsubackPacketImpl implements ModifiableUnsubackPacket {
     }
 
     @Override
-    public void setReasonCodes(
-            @NotNull final List<UnsubackReasonCode> reasonCodes) {
+    public void setReasonCodes(@NotNull final List<UnsubackReasonCode> reasonCodes) {
         Preconditions.checkNotNull(reasonCodes, "Reason codes must never be null");
         if (Objects.equals(this.reasonCodes, reasonCodes)) {
             return;

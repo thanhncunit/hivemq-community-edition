@@ -25,6 +25,7 @@ import com.hivemq.extension.sdk.api.interceptor.disconnect.DisconnectOutboundInt
 import com.hivemq.extension.sdk.api.interceptor.publish.PublishInboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.publish.PublishOutboundInterceptor;
 import com.hivemq.extension.sdk.api.interceptor.subscribe.SubscribeInboundInterceptor;
+import com.hivemq.extension.sdk.api.interceptor.unsuback.UnsubackOutboundInterceptor;
 import com.hivemq.extension.sdk.api.packets.auth.ModifiableDefaultPermissions;
 import com.hivemq.extensions.classloader.IsolatedPluginClassloader;
 import com.hivemq.extensions.executor.task.AbstractOutput;
@@ -67,6 +68,12 @@ public class ClientContextPluginImpl extends AbstractOutput implements ClientCon
     }
 
     @Override
+    public void addUnsubackOutboundInterceptor(
+            @NotNull final UnsubackOutboundInterceptor interceptor) {
+        clientContext.addInterceptor(checkNotNull(interceptor, "The interceptor must never be null"));
+    }
+
+    @Override
     public void addDisconnectInboundInterceptor(
             final @NotNull DisconnectInboundInterceptor interceptor) {
         clientContext.addInterceptor(checkNotNull(interceptor, "The interceptor must never be null"));
@@ -103,6 +110,13 @@ public class ClientContextPluginImpl extends AbstractOutput implements ClientCon
     public void removeDisconnectOutboundInterceptor(
             final @NotNull DisconnectOutboundInterceptor interceptor) {
         clientContext.removeInterceptor(checkNotNull(interceptor, "The interceptor must never be null"));
+    }
+
+    @Override
+    public void removeUnsubackOutboundInterceptor(
+            final @NotNull UnsubackOutboundInterceptor interceptor) {
+        clientContext.removeInterceptor(checkNotNull(interceptor, "The interceptor must never be null"));
+
     }
 
     @NotNull
@@ -145,6 +159,13 @@ public class ClientContextPluginImpl extends AbstractOutput implements ClientCon
     @Immutable
     public List<DisconnectInboundInterceptor> getDisconnectInboundInterceptors() {
         return clientContext.getDisconnectInboundInterceptorsForPlugin(pluginClassloader);
+    }
+
+    @NotNull
+    @Override
+    @Immutable
+    public List<UnsubackOutboundInterceptor> getUnsubscribeOutboundInterceptors() {
+        return clientContext.getUnsubackOutboundInterceptorsForPlugin(pluginClassloader);
     }
 
     @NotNull
