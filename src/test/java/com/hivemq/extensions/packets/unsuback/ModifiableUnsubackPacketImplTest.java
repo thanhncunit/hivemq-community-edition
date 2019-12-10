@@ -47,7 +47,7 @@ public class ModifiableUnsubackPacketImplTest {
     public void test_change_all_valid_values() {
         final List<UnsubackReasonCode> reasonCodes = new ArrayList<>();
         reasonCodes.add(UnsubackReasonCode.PACKET_IDENTIFIER_IN_USE);
-        reasonCodes.add(UnsubackReasonCode.SUCCESS);
+        reasonCodes.add(UnsubackReasonCode.NO_SUBSCRIPTIONS_EXISTED);
         reasonCodes.add(UnsubackReasonCode.NOT_AUTHORIZED);
 
         packet.setReasonString("testReasonString");
@@ -55,7 +55,7 @@ public class ModifiableUnsubackPacketImplTest {
 
         assertEquals("testReasonString", packet.getReasonString());
         assertEquals(UnsubackReasonCode.PACKET_IDENTIFIER_IN_USE, packet.getReasonCodes().get(0));
-        assertEquals(UnsubackReasonCode.SUCCESS, packet.getReasonCodes().get(1));
+        assertEquals(UnsubackReasonCode.NO_SUBSCRIPTIONS_EXISTED, packet.getReasonCodes().get(1));
         assertEquals(UnsubackReasonCode.NOT_AUTHORIZED, packet.getReasonCodes().get(2));
     }
 
