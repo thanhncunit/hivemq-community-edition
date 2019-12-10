@@ -96,10 +96,10 @@ public class ModifiableUnsubackPacketImplTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void test_reason_codes_with_different_sizes() {
-        final ArrayList<UnsubackReasonCode> subackReasonCodes = new ArrayList<>();
-        subackReasonCodes.add(UnsubackReasonCode.TOPIC_FILTER_INVALID);
-        subackReasonCodes.add(UnsubackReasonCode.PACKET_IDENTIFIER_IN_USE);
-        packet.setReasonCodes(subackReasonCodes);
+        final ArrayList<UnsubackReasonCode> unsubackReasonCodes = new ArrayList<>();
+        unsubackReasonCodes.add(UnsubackReasonCode.TOPIC_FILTER_INVALID);
+        unsubackReasonCodes.add(UnsubackReasonCode.PACKET_IDENTIFIER_IN_USE);
+        packet.setReasonCodes(unsubackReasonCodes);
     }
 
     private @NotNull ModifiableUnsubackPacketImpl createTestUnsubackPacket(

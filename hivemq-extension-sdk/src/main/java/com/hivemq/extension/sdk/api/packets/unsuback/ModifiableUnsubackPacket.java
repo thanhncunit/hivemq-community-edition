@@ -1,5 +1,6 @@
 package com.hivemq.extension.sdk.api.packets.unsuback;
 
+import com.hivemq.extension.sdk.api.annotations.DoNotImplement;
 import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.packets.general.ModifiableUserProperties;
 import com.hivemq.extension.sdk.api.packets.general.UserProperties;
@@ -10,6 +11,7 @@ import java.util.List;
 /**
  * @author Robin Atherton
  */
+@DoNotImplement
 public interface ModifiableUnsubackPacket extends UnsubackPacket {
 
     /**

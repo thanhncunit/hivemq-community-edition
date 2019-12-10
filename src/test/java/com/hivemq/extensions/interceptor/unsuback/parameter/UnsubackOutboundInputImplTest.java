@@ -8,6 +8,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import util.TestMessageUtil;
 
+/**
+ * @author Robin Atherton
+ */
 public class UnsubackOutboundInputImplTest {
 
     @Test

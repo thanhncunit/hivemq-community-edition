@@ -7,7 +7,7 @@ import com.hivemq.extension.sdk.api.packets.unsuback.UnsubackPacket;
 import com.hivemq.extension.sdk.api.parameter.ClientBasedInput;
 
 /**
- * This i s the input parameter of any {@link UnsubackOutboundInterceptor} providing UNSUBACK, connection and client
+ * This is the input parameter of any {@link UnsubackOutboundInterceptor} providing UNSUBACK, connection and client
  * based information.
  *
  * @author Robin Atherton

@@ -2,8 +2,8 @@ package com.hivemq.extensions.packets.unsuback;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.hivemq.annotations.NotNull;
 import com.hivemq.configuration.service.FullConfigurationService;
-import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.packets.general.ModifiableUserProperties;
 import com.hivemq.extension.sdk.api.packets.unsuback.ModifiableUnsubackPacket;
 import com.hivemq.extension.sdk.api.packets.unsuback.UnsubackPacket;
@@ -80,7 +80,24 @@ public class ModifiableUnsubackPacketImpl implements ModifiableUnsubackPacket {
             return;
         }
         if (reasonCodes.size() != this.reasonCodes.size()) {
-            throw new IllegalArgumentException("You cannot change the amount of reason codes.");
+            throw new IllegalArgumentException("The amount of UNSUBACK reason codes cannot be changed.");
+        }
+        for (int i = 0; i < reasonCodes.size(); i++) {
+            if (this.reasonCodes.get(i).equals(UnsubackReasonCode.SUCCESS)) {
+                if (!reasonCodes.get(i).equals(UnsubackReasonCode.SUCCESS)) {
+                    throw new IllegalArgumentException(
+                            "Cannot change UNSUBACK reason code from successful to unsuccessful. This is caused by the reason code at: " +
+                                    i);
+                }
+            }
+            if (!this.reasonCodes.get(i).equals(UnsubackReasonCode.SUCCESS)) {
+                if (reasonCodes.get(i).equals(UnsubackReasonCode.SUCCESS)) {
+                    throw new IllegalArgumentException(
+                            "Cannot change UNSUBACK reason code from unsuccessful to successful. This is caused by the reason code at: " +
+                                    i);
+
+                }
+            }
         }
         this.reasonCodes = ImmutableList.copyOf(reasonCodes);
         this.modified = true;

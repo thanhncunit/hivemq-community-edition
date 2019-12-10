@@ -1,7 +1,7 @@
 package com.hivemq.extensions.interceptor.unsuback.parameter;
 
+import com.hivemq.annotations.NotNull;
 import com.hivemq.configuration.service.FullConfigurationService;
-import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.interceptor.unsuback.parameter.UnsubackOutboundOutput;
 import com.hivemq.extension.sdk.api.packets.unsuback.UnsubackPacket;
 import com.hivemq.extensions.executor.PluginOutPutAsyncer;

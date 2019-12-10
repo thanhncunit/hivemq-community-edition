@@ -15,6 +15,7 @@ import com.hivemq.extension.sdk.api.interceptor.unsuback.parameter.UnsubackOutbo
  *
  * @author Robin Atherton
  */
+@FunctionalInterface
 public interface UnsubackOutboundInterceptor extends Interceptor {
 
     /**
