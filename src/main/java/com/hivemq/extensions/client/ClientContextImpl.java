@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.hivemq.extensions.client;
 
 import com.hivemq.annotations.Immutable;
@@ -41,18 +40,14 @@ import java.util.stream.Collectors;
  */
 public class ClientContextImpl {
 
-    @NotNull
-    private final List<Interceptor> interceptorList;
-
-    @NotNull
-    private final ModifiableDefaultPermissions defaultPermissions;
-
-    @NotNull
-    private final HiveMQExtensions hiveMQExtensions;
+    private final @NotNull List<Interceptor> interceptorList;
+    private final @NotNull ModifiableDefaultPermissions defaultPermissions;
+    private final @NotNull HiveMQExtensions hiveMQExtensions;
 
     public ClientContextImpl(
-            @NotNull final HiveMQExtensions hiveMQExtensions,
-            @NotNull final ModifiableDefaultPermissions defaultPermissions) {
+            final @NotNull HiveMQExtensions hiveMQExtensions,
+            final @NotNull ModifiableDefaultPermissions defaultPermissions) {
+
         this.interceptorList = new CopyOnWriteArrayList<>();
         this.hiveMQExtensions = hiveMQExtensions;
         this.defaultPermissions = defaultPermissions;
@@ -64,7 +59,15 @@ public class ClientContextImpl {
         }
     }
 
+    public void update(@NotNull final ClientContextPluginImpl clientContextPlugin) {
+        interceptorList.addAll(clientContextPlugin.getAllInterceptors());
+    }
+
     public void addPublishInboundInterceptor(@NotNull final PublishInboundInterceptor interceptor) {
+        addInterceptor(interceptor);
+    }
+
+    public void addPublishOutboundInterceptor(@NotNull final PublishOutboundInterceptor interceptor) {
         addInterceptor(interceptor);
     }
 
@@ -72,24 +75,8 @@ public class ClientContextImpl {
         addInterceptor(interceptor);
     }
 
-    public void addUnsubscribeInboundInterceptor(@NotNull final UnsubscribeInboundInterceptor interceptor) {
-        addInterceptor(interceptor);
-    }
-
-    public void addDisconnectInboundInterceptor(@NotNull final DisconnectInboundInterceptor interceptor) {
-        addInterceptor(interceptor);
-    }
-
-    public void addDisconnectOutboundInterceptor(@NotNull final DisconnectOutboundInterceptor interceptor) {
-        addInterceptor(interceptor);
-    }
-
     public void removePublishInboundInterceptor(@NotNull final PublishInboundInterceptor interceptor) {
         removeInterceptor(interceptor);
-    }
-
-    public void addPublishOutboundInterceptor(@NotNull final PublishOutboundInterceptor interceptor) {
-        addInterceptor(interceptor);
     }
 
     public void removePublishOutboundInterceptor(@NotNull final PublishOutboundInterceptor interceptor) {
@@ -100,26 +87,13 @@ public class ClientContextImpl {
         removeInterceptor(interceptor);
     }
 
-    public void removeUnsubscribeInboundInterceptor(@NotNull final UnsubscribeInboundInterceptor interceptor) {
-        removeInterceptor(interceptor);
-    }
-
-    public void removeDisconnectInboundInterceptor(@NotNull final DisconnectInboundInterceptor interceptor) {
-        removeInterceptor(interceptor);
-    }
-
-    public void removeDisconnectOutboundInterceptor(@NotNull final DisconnectOutboundInterceptor interceptor) {
-        removeInterceptor(interceptor);
-    }
-
     public void removeInterceptor(@NotNull final Interceptor interceptor) {
         interceptorList.remove(interceptor);
     }
 
     @NotNull
     @Immutable
-    public List<Interceptor> getAllInterceptorsForPlugin(
-            @NotNull final IsolatedPluginClassloader pluginClassloader) {
+    public List<Interceptor> getAllInterceptorsForPlugin(@NotNull final IsolatedPluginClassloader pluginClassloader) {
         return interceptorList.stream()
                 .filter(interceptor -> interceptor.getClass().getClassLoader().equals(pluginClassloader))
                 .collect(Collectors.toUnmodifiableList());
@@ -141,17 +115,6 @@ public class ClientContextImpl {
                 .filter(interceptor -> interceptor.getClass().getClassLoader().equals(pluginClassloader))
                 .filter(interceptor -> interceptor instanceof PublishInboundInterceptor)
                 .map(interceptor -> (PublishInboundInterceptor) interceptor)
-                .collect(Collectors.toUnmodifiableList());
-    }
-
-    @NotNull
-    @Immutable
-    public List<SubscribeInboundInterceptor> getSubscribeInboundInterceptorsForPlugin(
-            @NotNull final IsolatedPluginClassloader pluginClassloader) {
-        return interceptorList.stream()
-                .filter(interceptor -> interceptor.getClass().getClassLoader().equals(pluginClassloader))
-                .filter(interceptor -> interceptor instanceof SubscribeInboundInterceptor)
-                .map(interceptor -> (SubscribeInboundInterceptor) interceptor)
                 .collect(Collectors.toUnmodifiableList());
     }
 
@@ -185,6 +148,17 @@ public class ClientContextImpl {
                 .filter(this::hasPluginForClassloader)
                 .sorted(Comparator.comparingInt(this::comparePluginPriority).reversed())
                 .map(interceptor -> (PublishOutboundInterceptor) interceptor)
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    @NotNull
+    @Immutable
+    public List<SubscribeInboundInterceptor> getSubscribeInboundInterceptorsForPlugin(
+            @NotNull final IsolatedPluginClassloader pluginClassloader) {
+        return interceptorList.stream()
+                .filter(interceptor -> interceptor.getClass().getClassLoader().equals(pluginClassloader))
+                .filter(interceptor -> interceptor instanceof SubscribeInboundInterceptor)
+                .map(interceptor -> (SubscribeInboundInterceptor) interceptor)
                 .collect(Collectors.toUnmodifiableList());
     }
 

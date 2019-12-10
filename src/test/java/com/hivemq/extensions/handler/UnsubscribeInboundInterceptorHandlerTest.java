@@ -1,3 +1,18 @@
+/*
+ * Copyright 2019 dc-square GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.hivemq.extensions.handler;
 
 import com.google.common.collect.ImmutableList;
@@ -47,27 +62,26 @@ import static org.mockito.Mockito.when;
 
 public class UnsubscribeInboundInterceptorHandlerTest {
 
-
     @Rule
     public @NotNull TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Mock
-    private @Nullable HiveMQExtension extension;
+    private HiveMQExtension extension;
 
     @Mock
-    private @Nullable HiveMQExtensions extensions;
+    private HiveMQExtensions extensions;
 
     @Mock
-    private @Nullable ClientContextImpl clientContext;
+    private ClientContextImpl clientContext;
 
     @Mock
-    private @Nullable FullConfigurationService configurationService;
+    private FullConfigurationService configurationService;
 
-    private @Nullable PluginTaskExecutor executor;
-    private @Nullable EmbeddedChannel channel;
+    private PluginTaskExecutor executor;
+    private EmbeddedChannel channel;
 
-    public static @NotNull AtomicBoolean isTriggered = new AtomicBoolean();
-    private @Nullable UnsubscribeInboundInterceptorHandler handler;
+    public static AtomicBoolean isTriggered = new AtomicBoolean();
+    private UnsubscribeInboundInterceptorHandler handler;
 
     @Before
     public void setup() {
@@ -115,7 +129,7 @@ public class UnsubscribeInboundInterceptorHandlerTest {
 
         final UnsubscribeInboundInterceptor interceptor =
                 getIsolatedInboundInterceptor("SimpleUnsubscribeTestInterceptor");
-        clientContext.addUnsubscribeInboundInterceptor(interceptor);
+        clientContext.addInterceptor(interceptor);
 
         channel.attr(ChannelAttributes.PLUGIN_CLIENT_CONTEXT).set(clientContext);
         channel.attr(ChannelAttributes.MQTT_VERSION).set(ProtocolVersion.MQTTv3_1);
@@ -140,7 +154,7 @@ public class UnsubscribeInboundInterceptorHandlerTest {
 
         final UnsubscribeInboundInterceptor interceptor =
                 getIsolatedInboundInterceptor("ModifyUnsubscribeTestInterceptor");
-        clientContext.addUnsubscribeInboundInterceptor(interceptor);
+        clientContext.addInterceptor(interceptor);
 
         channel.attr(ChannelAttributes.PLUGIN_CLIENT_CONTEXT).set(clientContext);
         channel.attr(ChannelAttributes.MQTT_VERSION).set(ProtocolVersion.MQTTv3_1);
@@ -196,9 +210,8 @@ public class UnsubscribeInboundInterceptorHandlerTest {
                 final @NotNull UnsubscribeInboundInput input,
                 final @NotNull UnsubscribeInboundOutput output) {
             final ModifiableUnsubscribePacket packet = output.getUnsubscribePacket();
-            packet.setTopics(Collections.singletonList("not topics"));
+            packet.setTopicFilters(Collections.singletonList("not topics"));
             isTriggered.set(true);
         }
     }
-
 }

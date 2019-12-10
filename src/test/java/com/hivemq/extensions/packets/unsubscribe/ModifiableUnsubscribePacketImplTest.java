@@ -1,7 +1,21 @@
+/*
+ * Copyright 2019 dc-square GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.hivemq.extensions.packets.unsubscribe;
 
 import com.google.common.collect.ImmutableList;
-import com.hivemq.annotations.NotNull;
 import com.hivemq.configuration.service.FullConfigurationService;
 import com.hivemq.mqtt.message.mqtt5.Mqtt5UserProperties;
 import com.hivemq.mqtt.message.mqtt5.MqttUserProperty;
@@ -10,9 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import util.TestConfigurationBootstrap;
 
-import java.util.ArrayList;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Robin Atherton
@@ -29,54 +41,27 @@ public class ModifiableUnsubscribePacketImplTest {
     }
 
     @Test
-    public void test_add_topics_same() {
-        modifiableUnsubscribePacket.addTopics("Test");
-        assertEquals(2, modifiableUnsubscribePacket.getTopics().size());
-        assertFalse(modifiableUnsubscribePacket.isModified());
-    }
-
-    @Test
-    public void test_add_topics_different() {
-        modifiableUnsubscribePacket.addTopics("Test/Different");
-        assertEquals(3, modifiableUnsubscribePacket.getTopics().size());
-        assertTrue(modifiableUnsubscribePacket.isModified());
-    }
-
-    @Test
-    public void remove_existing_topic() {
-        modifiableUnsubscribePacket.removeTopics("Test");
-        assertEquals(1, modifiableUnsubscribePacket.getTopics().size());
-        assertTrue(modifiableUnsubscribePacket.isModified());
-    }
-
-    @Test
-    public void remove_non_existent_topic() {
-        modifiableUnsubscribePacket.removeTopics("Non Existing");
-        assertEquals(2, modifiableUnsubscribePacket.getTopics().size());
-        assertFalse(modifiableUnsubscribePacket.isModified());
-    }
-
-    @Test
     public void set_topics() {
-        final ArrayList<String> topics = new ArrayList<>();
-        topics.add("Test1");
-        topics.add("Test2");
-        topics.add("Test3");
-        modifiableUnsubscribePacket.addTopics("Test1");
-        modifiableUnsubscribePacket.addTopics("Test2");
-        modifiableUnsubscribePacket.addTopics("Test3");
-        assertEquals(5, modifiableUnsubscribePacket.getTopics().size());
-        modifiableUnsubscribePacket.setTopics(topics);
-        assertEquals(3, modifiableUnsubscribePacket.getTopics().size());
+        modifiableUnsubscribePacket.setTopicFilters(ImmutableList.of("test1", "test2"));
+        assertEquals("test1", modifiableUnsubscribePacket.getTopicFilters().get(0));
+        assertEquals("test2", modifiableUnsubscribePacket.getTopicFilters().get(1));
+    }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void set_topics_too_many() {
+        modifiableUnsubscribePacket.setTopicFilters(ImmutableList.of("test1", "test2", "test3"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void set_topics_too_few() {
+        modifiableUnsubscribePacket.setTopicFilters(ImmutableList.of("test1"));
     }
 
     private ModifiableUnsubscribePacketImpl testUnsubscribePacket() {
         final ImmutableList<String> topics = ImmutableList.of("Test", "Test/Topic");
-        final @NotNull Mqtt5UserProperties props =
+        final Mqtt5UserProperties props =
                 Mqtt5UserProperties.builder().add(MqttUserProperty.of("Test", "TestValue")).build();
         final UNSUBSCRIBE unsubscribe = new UNSUBSCRIBE(topics, 1, props);
         return new ModifiableUnsubscribePacketImpl(configurationService, unsubscribe);
     }
-
 }

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2019 dc-square GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.hivemq.extensions.handler;
 
 import com.hivemq.configuration.service.FullConfigurationService;
@@ -13,7 +28,6 @@ import com.hivemq.extensions.executor.task.PluginInOutTask;
 import com.hivemq.extensions.executor.task.PluginInOutTaskContext;
 import com.hivemq.extensions.interceptor.unsubscribe.parameter.UnsubscribeInboundInputImpl;
 import com.hivemq.extensions.interceptor.unsubscribe.parameter.UnsubscribeInboundOutputImpl;
-import com.hivemq.extensions.packets.unsubscribe.UnsubscribePacketImpl;
 import com.hivemq.mqtt.message.unsubscribe.UNSUBSCRIBE;
 import com.hivemq.util.ChannelAttributes;
 import io.netty.channel.Channel;
@@ -44,10 +58,11 @@ public class UnsubscribeInboundInterceptorHandler extends ChannelInboundHandlerA
 
     @Inject
     public UnsubscribeInboundInterceptorHandler(
-            @NotNull final FullConfigurationService configurationService,
-            @NotNull final PluginOutPutAsyncer asyncer,
-            @NotNull final HiveMQExtensions hiveMQExtensions,
-            @NotNull final PluginTaskExecutorService pluginTaskExecutorService) {
+            final @NotNull FullConfigurationService configurationService,
+            final @NotNull PluginOutPutAsyncer asyncer,
+            final @NotNull HiveMQExtensions hiveMQExtensions,
+            final @NotNull PluginTaskExecutorService pluginTaskExecutorService) {
+
         this.configurationService = configurationService;
         this.asyncer = asyncer;
         this.hiveMQExtensions = hiveMQExtensions;
@@ -55,48 +70,46 @@ public class UnsubscribeInboundInterceptorHandler extends ChannelInboundHandlerA
     }
 
     @Override
-    public void channelRead(final @NotNull ChannelHandlerContext ctx, @NotNull final Object msg) throws Exception {
+    public void channelRead(final @NotNull ChannelHandlerContext ctx, final @NotNull Object msg) {
         if (!(msg instanceof UNSUBSCRIBE)) {
             ctx.fireChannelRead(msg);
             return;
         }
-
         handleInboundUnsubscribe(ctx, (UNSUBSCRIBE) msg);
-
     }
 
     private void handleInboundUnsubscribe(
-            @NotNull final ChannelHandlerContext ctx, @NotNull final UNSUBSCRIBE unsubscribe) throws Exception {
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull UNSUBSCRIBE unsubscribe) {
+
         final Channel channel = ctx.channel();
 
         final String clientId = channel.attr(ChannelAttributes.CLIENT_ID).get();
         if (clientId == null) {
             return;
         }
+
         final ClientContextImpl clientContext = channel.attr(ChannelAttributes.PLUGIN_CLIENT_CONTEXT).get();
         if (clientContext == null) {
             ctx.fireChannelRead(unsubscribe);
             return;
         }
-        final List<UnsubscribeInboundInterceptor> unsubscribeInboundInterceptors =
-                clientContext.getUnsubscribeInboundInterceptors();
-        if (unsubscribeInboundInterceptors.isEmpty()) {
+
+        final List<UnsubscribeInboundInterceptor> interceptors = clientContext.getUnsubscribeInboundInterceptors();
+        if (interceptors.isEmpty()) {
             ctx.fireChannelRead(unsubscribe);
             return;
         }
 
-        final UnsubscribeInboundInputImpl input =
-                new UnsubscribeInboundInputImpl(new UnsubscribePacketImpl(unsubscribe), clientId, channel);
-
+        final UnsubscribeInboundInputImpl input = new UnsubscribeInboundInputImpl(clientId, channel, unsubscribe);
         final UnsubscribeInboundOutputImpl output =
                 new UnsubscribeInboundOutputImpl(asyncer, configurationService, unsubscribe);
 
         final UnsubscribeInboundInterceptorContext interceptorContext =
-                new UnsubscribeInboundInterceptorContext(
-                        UnsubscribeInboundInterceptorTask.class, clientId, input, ctx,
-                        unsubscribeInboundInterceptors.size());
+                new UnsubscribeInboundInterceptorContext(UnsubscribeInboundInterceptorTask.class, clientId, input, ctx,
+                        interceptors.size());
 
-        for (final UnsubscribeInboundInterceptor interceptor : unsubscribeInboundInterceptors) {
+        for (final UnsubscribeInboundInterceptor interceptor : interceptors) {
 
             final HiveMQExtension extension = hiveMQExtensions.getExtensionForClassloader(
                     (IsolatedPluginClassloader) interceptor.getClass().getClassLoader());
@@ -126,6 +139,7 @@ public class UnsubscribeInboundInterceptorHandler extends ChannelInboundHandlerA
                 final @NotNull UnsubscribeInboundInputImpl input,
                 final @NotNull ChannelHandlerContext ctx,
                 final int interceptorCount) {
+
             super(taskClazz, identifier);
             this.input = input;
             this.ctx = ctx;
@@ -159,22 +173,23 @@ public class UnsubscribeInboundInterceptorHandler extends ChannelInboundHandlerA
         private final @NotNull String extensionId;
 
         UnsubscribeInboundInterceptorTask(
-                @NotNull final UnsubscribeInboundInterceptor interceptor,
-                @NotNull final String extensionId) {
+                final @NotNull UnsubscribeInboundInterceptor interceptor,
+                final @NotNull String extensionId) {
+
             this.interceptor = interceptor;
             this.extensionId = extensionId;
         }
 
-        @NotNull
         @Override
-        public UnsubscribeInboundOutputImpl apply(
+        public @NotNull UnsubscribeInboundOutputImpl apply(
                 final @NotNull UnsubscribeInboundInputImpl input,
                 final @NotNull UnsubscribeInboundOutputImpl output) {
+
             try {
                 interceptor.onInboundUnsubscribe(input, output);
             } catch (final Throwable e) {
                 log.debug(
-                        "Uncaught exception was thrown from extension with id \"{}\" on inbound unsubscribe request interception." +
+                        "Uncaught exception was thrown from extension with id \"{}\" on inbound unsubscribe interception. " +
                                 "Extensions are responsible for their own exception handling.", extensionId);
                 log.debug("Original Exception:" + e);
                 output.update(input.getUnsubscribePacket());
@@ -187,5 +202,4 @@ public class UnsubscribeInboundInterceptorHandler extends ChannelInboundHandlerA
             return interceptor.getClass().getClassLoader();
         }
     }
-
 }

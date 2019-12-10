@@ -1,7 +1,24 @@
+/*
+ * Copyright 2019 dc-square GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.hivemq.extensions.packets.unsubscribe;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.hivemq.configuration.service.FullConfigurationService;
+import com.hivemq.extension.sdk.api.annotations.Immutable;
 import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.packets.general.ModifiableUserProperties;
 import com.hivemq.extension.sdk.api.packets.unsubscribe.ModifiableUnsubscribePacket;
@@ -9,112 +26,72 @@ import com.hivemq.extension.sdk.api.packets.unsubscribe.UnsubscribePacket;
 import com.hivemq.extensions.packets.general.InternalUserProperties;
 import com.hivemq.extensions.packets.general.ModifiableUserPropertiesImpl;
 import com.hivemq.mqtt.message.unsubscribe.UNSUBSCRIBE;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Robin Atherton
  */
 public class ModifiableUnsubscribePacketImpl implements ModifiableUnsubscribePacket {
 
-    Logger logger = LoggerFactory.getLogger(ModifiableUnsubscribePacketImpl.class);
-
+    private @NotNull ImmutableList<String> topicFilters;
     private final @NotNull ModifiableUserPropertiesImpl userProperties;
-    private @NotNull ImmutableList<String> topics;
     private final int packetIdentifier;
 
     private boolean modified = false;
 
     public ModifiableUnsubscribePacketImpl(
-            final @NotNull FullConfigurationService fullConfigurationService, final @NotNull UNSUBSCRIBE unsubscribe) {
-        this.topics = ImmutableList.copyOf(unsubscribe.getTopics());
-        this.userProperties = new ModifiableUserPropertiesImpl(
+            final @NotNull FullConfigurationService fullConfigurationService,
+            final @NotNull UNSUBSCRIBE unsubscribe) {
+
+        topicFilters = unsubscribe.getTopics();
+        userProperties = new ModifiableUserPropertiesImpl(
                 unsubscribe.getUserProperties().getPluginUserProperties(),
                 fullConfigurationService.securityConfiguration().validateUTF8());
-        this.packetIdentifier = unsubscribe.getPacketIdentifier();
+        packetIdentifier = unsubscribe.getPacketIdentifier();
     }
 
     public ModifiableUnsubscribePacketImpl(
             final @NotNull FullConfigurationService fullConfigurationService,
             final @NotNull UnsubscribePacket unsubscribe) {
-        this.topics = ImmutableList.copyOf(unsubscribe.getTopics());
-        this.userProperties = new ModifiableUserPropertiesImpl(
+
+        topicFilters = ImmutableList.copyOf(unsubscribe.getTopicFilters());
+        userProperties = new ModifiableUserPropertiesImpl(
                 (InternalUserProperties) unsubscribe.getUserProperties(),
                 fullConfigurationService.securityConfiguration().validateUTF8());
-        this.packetIdentifier = unsubscribe.getPacketIdentifier();
+        packetIdentifier = unsubscribe.getPacketIdentifier();
     }
 
     @Override
-    public List<String> getTopics() {
-        return this.topics;
+    public @Immutable @NotNull List<@NotNull String> getTopicFilters() {
+        return topicFilters;
     }
 
     @Override
-    public void setTopics(final @NotNull List<String> topics) {
-        this.topics = ImmutableList.copyOf(topics);
-        this.modified = true;
-    }
-
-    @Override
-    public void addTopics(final @NotNull String... topics) {
-        boolean modifiedFlag = true;
-        final List<String> temp = new ArrayList<>(this.topics);
-        for (final String topic : topics) {
-            if (!temp.contains(topic)) {
-                temp.add(topic);
-            } else {
-                logger.warn("Cannot unsubscribe from topics twice.");
-                if (topics.length == 1) {
-                    modifiedFlag = false;
-                }
-            }
+    public void setTopicFilters(final @NotNull List<@NotNull String> topicFilters) {
+        Preconditions.checkNotNull(topicFilters, "Topic filters must never be null.");
+        if (topicFilters.size() != this.topicFilters.size()) {
+            throw new IllegalArgumentException("You cannot change the amount of topic filters.");
         }
-        this.topics = ImmutableList.copyOf(temp);
-        if (modifiedFlag) {
-            this.modified = true;
+        if (Objects.equals(this.topicFilters, topicFilters)) {
+            return;
         }
-    }
-
-    @Override
-    public void removeTopics(final @NotNull String... topics) {
-        final ArrayList<String> topicList = new ArrayList<>();
-        for (final String topic : topics) {
-            if (this.topics.contains(topic)) {
-                topicList.add(topic);
-            } else {
-                logger.warn("Removing the same topic from the unsubscribe message's twice is not possible.");
-                return;
-            }
-        }
-        final List<String> temp = new ArrayList<>(this.topics);
-        final Iterator<String> iterator = temp.iterator();
-        while (iterator.hasNext()) {
-            for (final String topic : topicList) {
-                if (iterator.next().equals(topic)) {
-                    iterator.remove();
-                }
-            }
-        }
-        this.topics = ImmutableList.copyOf(temp);
-        this.modified = true;
+        this.topicFilters = ImmutableList.copyOf(topicFilters);
+        modified = true;
     }
 
     @Override
     public @NotNull ModifiableUserProperties getUserProperties() {
-        return this.userProperties;
+        return userProperties;
     }
 
     @Override
     public int getPacketIdentifier() {
-        return this.packetIdentifier;
+        return packetIdentifier;
     }
 
     public boolean isModified() {
         return modified;
     }
-
 }
