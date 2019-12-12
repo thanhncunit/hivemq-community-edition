@@ -92,11 +92,11 @@ public class ModifiableSubackPacketImpl implements ModifiableSubackPacket {
             throw new IllegalArgumentException("You cannot change the amount of reason codes.");
         }
         for (int i = 0; i < reasonCodes.size(); i++) {
-            Preconditions.checkNotNull(reasonCodes, "Reason code (at index {}) must never be null", i);
+            Preconditions.checkNotNull(reasonCodes, "Reason code (at index %s) must never be null", i);
             final Mqtt5SubAckReasonCode oldReasonCode = Mqtt5SubAckReasonCode.valueOf(this.reasonCodes.get(i).name());
             final Mqtt5SubAckReasonCode newReasonCode = Mqtt5SubAckReasonCode.valueOf(reasonCodes.get(i).name());
             Preconditions.checkState(newReasonCode.isError() == oldReasonCode.isError(),
-                    "Reason code (at index {}) must not switch from successful to unsuccessful or vice versa.", i);
+                    "Reason code (at index %s) must not switch from successful to unsuccessful or vice versa.", i);
         }
         if (Objects.equals(this.reasonCodes, reasonCodes)) {
             return;

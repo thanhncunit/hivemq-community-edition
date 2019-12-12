@@ -48,7 +48,7 @@ public class ModifiableSubackPacketImplTest {
     @Before
     public void setUp() throws Exception {
         originalReasonCodes = new ArrayList<>();
-        originalReasonCodes.add(Mqtt5SubAckReasonCode.PACKET_IDENTIFIER_IN_USE);
+        originalReasonCodes.add(Mqtt5SubAckReasonCode.GRANTED_QOS_2);
         originalReasonCodes.add(Mqtt5SubAckReasonCode.IMPLEMENTATION_SPECIFIC_ERROR);
         originalReasonCodes.add(Mqtt5SubAckReasonCode.QUOTA_EXCEEDED);
         original = createTestSubAck(1, originalReasonCodes, "reasonCodes");
@@ -56,7 +56,7 @@ public class ModifiableSubackPacketImplTest {
 
         modifiedReasonCodes = new ArrayList<>();
         modifiedReasonCodes.add(SubackReasonCode.GRANTED_QOS_1);
-        modifiedReasonCodes.add(SubackReasonCode.IMPLEMENTATION_SPECIFIC_ERROR);
+        modifiedReasonCodes.add(SubackReasonCode.UNSPECIFIED_ERROR);
         modifiedReasonCodes.add(SubackReasonCode.NOT_AUTHORIZED);
     }
 
