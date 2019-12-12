@@ -27,7 +27,6 @@ import static org.junit.Assert.*;
 
 /**
  * @author Yannick Weber
- * @since 4.3.0
  */
 public class ModifiablePubcompPacketImplTest {
 

@@ -18,6 +18,8 @@ package com.hivemq.extension.sdk.api.packets.pubrec;
 import com.hivemq.extension.sdk.api.annotations.DoNotImplement;
 import com.hivemq.extension.sdk.api.annotations.Immutable;
 import com.hivemq.extension.sdk.api.annotations.NotNull;
+import com.hivemq.extension.sdk.api.interceptor.pubrec.PubrecInboundInterceptor;
+import com.hivemq.extension.sdk.api.interceptor.pubrec.PubrecOutboundInterceptor;
 import com.hivemq.extension.sdk.api.packets.general.UserProperties;
 import com.hivemq.extension.sdk.api.packets.publish.AckReasonCode;
 
@@ -53,7 +55,8 @@ public interface PubrecPacket {
     /**
      * The reason string of the PUBREC packet.
      * <p>
-     * For an MQTT 3 client this {@link Optional} for the MQTT 5 property will always be empty.
+     * For an MQTT 3 client this {@link Optional} for the MQTT 5 property will always be empty (if not modified by a
+     * previous {@link PubrecInboundInterceptor} or {@link PubrecOutboundInterceptor}).
      *
      * @return An {@link Optional} containing the pubrec reason string if present.
      */
@@ -62,7 +65,8 @@ public interface PubrecPacket {
     /**
      * The user properties from the PUBREC packet.
      * <p>
-     * The properties will always be empty for an MQTT 3 client.
+     * For an MQTT 3 client this MQTT 5 property will always be empty (if not modified by a
+     * previous {@link PubrecInboundInterceptor} or {@link PubrecOutboundInterceptor}).
      *
      * @return The user properties.
      */

@@ -18,12 +18,15 @@ package com.hivemq.extension.sdk.api.packets.pubrec;
 import com.hivemq.extension.sdk.api.annotations.DoNotImplement;
 import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.annotations.Nullable;
+import com.hivemq.extension.sdk.api.interceptor.pubrec.PubrecInboundInterceptor;
+import com.hivemq.extension.sdk.api.interceptor.pubrec.PubrecOutboundInterceptor;
 import com.hivemq.extension.sdk.api.packets.general.ModifiableUserProperties;
 import com.hivemq.extension.sdk.api.packets.general.UserProperties;
 import com.hivemq.extension.sdk.api.packets.publish.AckReasonCode;
 
 /**
- * A {@link PubrecPacket} that can be modified before it is sent to the client.
+ * A {@link PubrecPacket} that can be modified before it is sent to the client (for {@link PubrecOutboundInterceptor})
+ * or to the server (for {@link PubrecInboundInterceptor}).
  *
  * @author Yannick Weber
  */
@@ -36,7 +39,7 @@ public interface ModifiablePubrecPacket extends PubrecPacket {
      * Switching from successful to unsuccessful and vice versa is not supported.
      *
      * @param reasonCode The reason code to set.
-     * @throws NullPointerException  If reason code is <null>.
+     * @throws NullPointerException  If reason code is <code>null</code>.
      * @throws IllegalStateException If switching from successful reason code to unsuccessful reason code or vice
      *                               versa.
      * @see AckReasonCode How reason codes are translated from MQTT 5 to MQTT 3.
@@ -48,10 +51,13 @@ public interface ModifiablePubrecPacket extends PubrecPacket {
      * <p>
      * A reason must not be set for a successful publish.
      * <p>
-     * This setting is only respected for MQTT 5 clients. For MQTT 3.x clients this setting is ignored.
+     * For an {@link PubrecOutboundInterceptor} this setting is only respected for MQTT 5 clients and ignored for MQTT
+     * 3.x clients when the PUBREC is sent to the client (as MQTT 3.x clients don't know this property).
+     * <p>
+     * For an {@link PubrecInboundInterceptor} this setting is respected for MQTT 5 and MQTT 3.x clients when the
+     * PUBREC is sent to HiveMQ, this allows to enrich MQTT 3.x PUBRECs with this MQTT 5 property.
      *
      * @param reasonString The reason string to set.
-     * @throws IllegalStateException    If reason code is {@link AckReasonCode#SUCCESS}.
      * @throws IllegalArgumentException If the reason string is not a valid UTF-8 string.
      * @throws IllegalArgumentException If the reason string exceeds the UTF-8 string length limit.
      */
@@ -59,6 +65,12 @@ public interface ModifiablePubrecPacket extends PubrecPacket {
 
     /**
      * Get the modifiable {@link UserProperties} of the PUBREC packet.
+     * <p>
+     * For an {@link PubrecOutboundInterceptor} this setting is only respected for MQTT 5 clients and ignored for MQTT
+     * 3.x clients when the PUBREC is sent to the client (as MQTT 3.x clients don't know this property).
+     * <p>
+     * For an {@link PubrecInboundInterceptor} this setting is respected for MQTT 5 and MQTT 3.x clients when the
+     * PUBREC is sent to HiveMQ, this allows to enrich MQTT 3.x PUBRECs with this MQTT 5 property.
      *
      * @return Modifiable user properties.
      */

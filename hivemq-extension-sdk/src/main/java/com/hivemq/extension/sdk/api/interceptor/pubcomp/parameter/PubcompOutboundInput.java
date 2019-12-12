@@ -23,7 +23,8 @@ import com.hivemq.extension.sdk.api.packets.pubcomp.PubcompPacket;
 import com.hivemq.extension.sdk.api.parameter.ClientBasedInput;
 
 /**
- * This is the input parameter for any {@link PubcompOutboundInterceptor} providing PUBCOMP information.
+ * This is the input parameter for any {@link PubcompOutboundInterceptor}
+ * providing PUBCOMP, connection and client based information.
  *
  * @author Yannick Weber
  */

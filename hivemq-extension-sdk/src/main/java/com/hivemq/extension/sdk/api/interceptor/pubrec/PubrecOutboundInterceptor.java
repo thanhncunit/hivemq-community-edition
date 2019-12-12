@@ -20,6 +20,7 @@ import com.hivemq.extension.sdk.api.async.TimeoutFallback;
 import com.hivemq.extension.sdk.api.interceptor.Interceptor;
 import com.hivemq.extension.sdk.api.interceptor.pubrec.parameter.PubrecOutboundInput;
 import com.hivemq.extension.sdk.api.interceptor.pubrec.parameter.PubrecOutboundOutput;
+import com.hivemq.extension.sdk.api.packets.pubrec.ModifiablePubrecPacket;
 
 import java.time.Duration;
 
@@ -31,9 +32,14 @@ import java.time.Duration;
  * If the same instance is shared between multiple clients it can be called in different Threads and must therefore be
  * thread-safe.
  * <p>
- * When the method {@link #onOutboundPubrec(PubrecOutboundInput, PubrecOutboundOutput)} throws an exception or a call to
- * {@link PubrecOutboundOutput#async(Duration)} times out with {@link TimeoutFallback#FAILURE}, then an error will be
- * logged. The connection will not be terminated and the original PUBREC will be sent to the client.
+ * When the method {@link #onOutboundPubrec(PubrecOutboundInput, PubrecOutboundOutput)} throws an exception or a call
+ * to {@link PubrecOutboundOutput#async(Duration)} times out with {@link TimeoutFallback#FAILURE}, HiveMQ will ignore
+ * this interceptor and will:
+ * <ol>
+ *    <li>Log the exception</li>
+ *    <li>Revert the changes to the {@link ModifiablePubrecPacket} made by the interceptor</li>
+ *    <li>Call the next {@link PubrecOutboundInterceptor} or send the PUBREC to the client if no interceptor is left</li>
+ * </ol>
  *
  * @author Yannick Weber
  */

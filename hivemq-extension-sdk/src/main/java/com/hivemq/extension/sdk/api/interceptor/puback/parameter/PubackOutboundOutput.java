@@ -26,7 +26,7 @@ import com.hivemq.extension.sdk.api.packets.puback.PubackPacket;
 import java.time.Duration;
 
 /**
- * This is the output parameter of any {@link PubackOutboundInterceptor}
+ * This is the output parameter of any {@link PubackOutboundInterceptor}.
  *
  * @author Yannick Weber
  */
@@ -36,13 +36,14 @@ public interface PubackOutboundOutput extends SimpleAsyncOutput<PubackOutboundOu
     /**
      * Use this object to make any changes to the PUBACK message.
      *
-     * @return An modifiable {@link PubackPacket}
+     * @return An modifiable {@link PubackPacket}.
      */
     @NotNull ModifiablePubackPacket getPubackPacket();
 
     /**
      * If the timeout is expired before {@link Async#resume()} is called then the outcome is handled as failed. In that
-     * case an unmodified PUBACK is forwarded to the client, all changes made by this interceptor are not passed on.
+     * case an unmodified PUBACK is forwarded to the next interceptor or client, all changes made by this interceptor
+     * are not passed on.
      * <p>
      * Do not call this method more than once. If an async method is called multiple times an exception is thrown.
      *

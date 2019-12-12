@@ -23,7 +23,8 @@ import com.hivemq.extension.sdk.api.packets.puback.PubackPacket;
 import com.hivemq.extension.sdk.api.parameter.ClientBasedInput;
 
 /**
- * This is the input parameter for any {@link PubackOutboundInterceptor} providing PUBACK information.
+ * This is the input parameter for any {@link PubackOutboundInterceptor}
+ * providing PUBACK, connection and client based information.
  *
  * @author Yannick Weber
  */

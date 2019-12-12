@@ -18,6 +18,8 @@ package com.hivemq.extension.sdk.api.packets.puback;
 import com.hivemq.extension.sdk.api.annotations.DoNotImplement;
 import com.hivemq.extension.sdk.api.annotations.Immutable;
 import com.hivemq.extension.sdk.api.annotations.NotNull;
+import com.hivemq.extension.sdk.api.interceptor.puback.PubackInboundInterceptor;
+import com.hivemq.extension.sdk.api.interceptor.puback.PubackOutboundInterceptor;
 import com.hivemq.extension.sdk.api.packets.general.UserProperties;
 import com.hivemq.extension.sdk.api.packets.publish.AckReasonCode;
 
@@ -44,7 +46,7 @@ public interface PubackPacket {
     /**
      * The reason code from the PUBACK packet.
      *
-     * @return The puback reason code.
+     * @return The PUBACK reason code.
      * @see AckReasonCode How reason codes are translated from MQTT 5 to MQTT 3.
      */
     @NotNull AckReasonCode getReasonCode();
@@ -52,16 +54,18 @@ public interface PubackPacket {
     /**
      * The reason string of the PUBACK packet.
      * <p>
-     * For an MQTT 3 client this {@link Optional} for the MQTT 5 property will always be empty.
+     * For an MQTT 3 client this {@link Optional} for the MQTT 5 property will always be empty (if not modified by a
+     * previous {@link PubackOutboundInterceptor} or {@link PubackInboundInterceptor}).
      *
-     * @return An {@link Optional} containing the puback reason string if present.
+     * @return An {@link Optional} containing the PUBACK reason string if present.
      */
     @NotNull Optional<String> getReasonString();
 
     /**
      * The user properties from the PUBACK packet.
      * <p>
-     * The properties will always be empty for an MQTT 3 client.
+     * For an MQTT 3 client this MQTT 5 property will always be empty (if not modified by a
+     * previous {@link PubackOutboundInterceptor} or {@link PubackInboundInterceptor}).
      *
      * @return The user properties.
      */

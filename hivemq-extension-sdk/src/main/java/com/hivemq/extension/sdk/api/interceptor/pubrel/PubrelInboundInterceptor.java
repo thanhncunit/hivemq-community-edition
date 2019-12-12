@@ -20,6 +20,7 @@ import com.hivemq.extension.sdk.api.async.TimeoutFallback;
 import com.hivemq.extension.sdk.api.interceptor.Interceptor;
 import com.hivemq.extension.sdk.api.interceptor.pubrel.parameter.PubrelInboundInput;
 import com.hivemq.extension.sdk.api.interceptor.pubrel.parameter.PubrelInboundOutput;
+import com.hivemq.extension.sdk.api.packets.pubrel.ModifiablePubrelPacket;
 
 import java.time.Duration;
 
@@ -32,8 +33,13 @@ import java.time.Duration;
  * thread-safe.
  * <p>
  * When the method {@link #onInboundPubrel(PubrelInboundInput, PubrelInboundOutput)} throws an exception or a call to
- * {@link PubrelInboundOutput#async(Duration)} times out with {@link TimeoutFallback#FAILURE}, the exception will be
- * logged and the PUBREL will be sent to the server without any changes.
+ * {@link PubrelInboundOutput#async(Duration)} times out with {@link TimeoutFallback#FAILURE}, HiveMQ will ignore
+ * this interceptor and will:
+ * <ol>
+ *    <li>Log the exception</li>
+ *    <li>Revert the changes to the {@link ModifiablePubrelPacket} made by the interceptor</li>
+ *    <li>Call the next {@link PubrelInboundInterceptor} or send the PUBREL to the server if no interceptor is left</li>
+ * </ol>
  *
  * @author Yannick Weber
  */

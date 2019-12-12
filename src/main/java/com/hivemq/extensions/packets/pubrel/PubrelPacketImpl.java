@@ -19,8 +19,8 @@ import com.hivemq.extension.sdk.api.annotations.Immutable;
 import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.annotations.Nullable;
 import com.hivemq.extension.sdk.api.packets.general.UserProperties;
-import com.hivemq.extension.sdk.api.packets.publish.PubrelReasonCode;
 import com.hivemq.extension.sdk.api.packets.pubrel.PubrelPacket;
+import com.hivemq.extension.sdk.api.packets.pubrel.PubrelReasonCode;
 import com.hivemq.mqtt.message.pubrel.PUBREL;
 
 import java.util.Optional;

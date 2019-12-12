@@ -26,7 +26,7 @@ import com.hivemq.extension.sdk.api.packets.pubrel.PubrelPacket;
 import java.time.Duration;
 
 /**
- * This is the output parameter of any {@link PubrelOutboundInterceptor}
+ * This is the output parameter of any {@link PubrelOutboundInterceptor}.
  *
  * @author Yannick Weber
  */
@@ -36,13 +36,14 @@ public interface PubrelOutboundOutput extends SimpleAsyncOutput<PubrelOutboundOu
     /**
      * Use this object to make any changes to the PUBREL message.
      *
-     * @return An modifiable {@link PubrelPacket}
+     * @return An modifiable {@link PubrelPacket}.
      */
     @NotNull ModifiablePubrelPacket getPubrelPacket();
 
     /**
      * If the timeout is expired before {@link Async#resume()} is called then the outcome is handled as failed.
-     * In that case an unmodified PUBREL is forwarded to the client, all changes made by this interceptor are not passed on.
+     * In that case an unmodified PUBREL is forwarded to the next interceptor or client, all changes made by this
+     * interceptor are not passed on.
      * <p>
      * Do not call this method more than once. If an async method is called multiple times an exception is thrown.
      *

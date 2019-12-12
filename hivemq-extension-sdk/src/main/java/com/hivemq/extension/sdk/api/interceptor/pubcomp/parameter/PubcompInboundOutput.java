@@ -26,7 +26,7 @@ import com.hivemq.extension.sdk.api.packets.pubcomp.PubcompPacket;
 import java.time.Duration;
 
 /**
- * This is the output parameter of any {@link PubcompInboundInterceptor}
+ * This is the output parameter of any {@link PubcompInboundInterceptor}.
  *
  * @author Yannick Weber
  */
@@ -36,13 +36,14 @@ public interface PubcompInboundOutput extends SimpleAsyncOutput<PubcompInboundOu
     /**
      * Use this object to make any changes to the PUBCOMP message.
      *
-     * @return An modifiable {@link PubcompPacket}
+     * @return An modifiable {@link PubcompPacket}.
      */
     @NotNull ModifiablePubcompPacket getPubcompPacket();
 
     /**
      * If the timeout is expired before {@link Async#resume()} is called then the outcome is handled as failed.
-     * In that case an unmodified PUBCOMP is forwarded to the server, all changes made by this interceptor are not passed on.
+     * In that case an unmodified PUBCOMP is forwarded to the next interceptor or server, all changes made by this
+     * interceptor are not passed on.
      * <p>
      * Do not call this method more than once. If an async method is called multiple times an exception is thrown.
      *

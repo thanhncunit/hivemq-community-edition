@@ -21,7 +21,7 @@ import com.hivemq.extension.sdk.api.annotations.Nullable;
 import com.hivemq.extension.sdk.api.packets.general.ModifiableUserProperties;
 import com.hivemq.extension.sdk.api.packets.pubcomp.ModifiablePubcompPacket;
 import com.hivemq.extension.sdk.api.packets.pubcomp.PubcompPacket;
-import com.hivemq.extension.sdk.api.packets.publish.PubcompReasonCode;
+import com.hivemq.extension.sdk.api.packets.pubcomp.PubcompReasonCode;
 import com.hivemq.extensions.packets.general.InternalUserProperties;
 import com.hivemq.extensions.packets.general.ModifiableUserPropertiesImpl;
 import com.hivemq.extensions.services.builder.PluginBuilderUtil;

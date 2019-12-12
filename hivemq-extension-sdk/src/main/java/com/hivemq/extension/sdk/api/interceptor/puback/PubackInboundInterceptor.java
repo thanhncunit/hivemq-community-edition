@@ -20,6 +20,7 @@ import com.hivemq.extension.sdk.api.async.TimeoutFallback;
 import com.hivemq.extension.sdk.api.interceptor.Interceptor;
 import com.hivemq.extension.sdk.api.interceptor.puback.parameter.PubackInboundInput;
 import com.hivemq.extension.sdk.api.interceptor.puback.parameter.PubackInboundOutput;
+import com.hivemq.extension.sdk.api.packets.puback.ModifiablePubackPacket;
 
 import java.time.Duration;
 
@@ -32,8 +33,13 @@ import java.time.Duration;
  * thread-safe.
  * <p>
  * When the method {@link #onInboundPuback(PubackInboundInput, PubackInboundOutput)} throws an exception or a call to
- * {@link PubackInboundOutput#async(Duration)} times out with {@link TimeoutFallback#FAILURE}, the exception will be
- * logged and the PUBACK will be sent to the server without any changes.
+ * {@link PubackInboundOutput#async(Duration)} times out with {@link TimeoutFallback#FAILURE}, HiveMQ will ignore this
+ * interceptor and will:
+ * <ol>
+ *    <li>Log the exception</li>
+ *    <li>Revert the changes to the {@link ModifiablePubackPacket} made by the interceptor</li>
+ *    <li>Call the next {@link PubackInboundInterceptor} or send the PUBACK to the server if no interceptor is left</li>
+ * </ol>
  *
  * @author Yannick Weber
  */

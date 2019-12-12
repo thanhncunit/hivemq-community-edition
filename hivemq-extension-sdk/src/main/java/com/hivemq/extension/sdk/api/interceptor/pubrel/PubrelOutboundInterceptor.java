@@ -20,6 +20,7 @@ import com.hivemq.extension.sdk.api.async.TimeoutFallback;
 import com.hivemq.extension.sdk.api.interceptor.Interceptor;
 import com.hivemq.extension.sdk.api.interceptor.pubrel.parameter.PubrelOutboundInput;
 import com.hivemq.extension.sdk.api.interceptor.pubrel.parameter.PubrelOutboundOutput;
+import com.hivemq.extension.sdk.api.packets.pubrel.ModifiablePubrelPacket;
 
 import java.time.Duration;
 
@@ -31,9 +32,14 @@ import java.time.Duration;
  * If the same instance is shared between multiple clients it can be called in different Threads and must therefore be
  * thread-safe.
  * <p>
- * When the method {@link #onOutboundPubrel(PubrelOutboundInput, PubrelOutboundOutput)} throws an exception or a call to
- * {@link PubrelOutboundOutput#async(Duration)} times out with {@link TimeoutFallback#FAILURE}, the exception will be
- * logged and the PUBREL will be sent to the client without any changes.
+ * When the method {@link #onOutboundPubrel(PubrelOutboundInput, PubrelOutboundOutput)} throws an exception or a call
+ * to {@link PubrelOutboundOutput#async(Duration)} times out with {@link TimeoutFallback#FAILURE}, HiveMQ will ignore
+ * this interceptor and will:
+ * <ol>
+ *    <li>Log the exception</li>
+ *    <li>Revert the changes to the {@link ModifiablePubrelPacket} made by the interceptor</li>
+ *    <li>Call the next {@link PubrelOutboundInterceptor} or send the PUBREL to the client if no interceptor is left</li>
+ * </ol>
  *
  * @author Yannick Weber
  */

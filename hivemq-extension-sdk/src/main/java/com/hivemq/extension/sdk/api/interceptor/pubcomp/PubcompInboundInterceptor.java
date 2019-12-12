@@ -20,6 +20,7 @@ import com.hivemq.extension.sdk.api.async.TimeoutFallback;
 import com.hivemq.extension.sdk.api.interceptor.Interceptor;
 import com.hivemq.extension.sdk.api.interceptor.pubcomp.parameter.PubcompInboundInput;
 import com.hivemq.extension.sdk.api.interceptor.pubcomp.parameter.PubcompInboundOutput;
+import com.hivemq.extension.sdk.api.packets.pubcomp.ModifiablePubcompPacket;
 
 import java.time.Duration;
 
@@ -31,9 +32,14 @@ import java.time.Duration;
  * If the same instance is shared between multiple clients it can be called in different Threads and must therefore be
  * thread-safe.
  * <p>
- * When the method {@link #onInboundPubcomp(PubcompInboundInput, PubcompInboundOutput)} throws an exception or a call to
- * {@link PubcompInboundOutput#async(Duration)} times out with {@link TimeoutFallback#FAILURE}, the exception will be
- * logged and the PUBCOMP will be sent to the server without any changes.
+ * When the method {@link #onInboundPubcomp(PubcompInboundInput, PubcompInboundOutput)} throws an exception or a call
+ * to {@link PubcompInboundOutput#async(Duration)} times out with {@link TimeoutFallback#FAILURE}, HiveMQ will ignore
+ * this interceptor and will:
+ * <ol>
+ *    <li>Log the exception</li>
+ *    <li>Revert the changes to the {@link ModifiablePubcompPacket} made by the interceptor</li>
+ *    <li>Call the next {@link PubcompInboundInterceptor} or send the PUBCOMP to the server if no interceptor is left</li>
+ * </ol>
  *
  * @author Yannick Weber
  */

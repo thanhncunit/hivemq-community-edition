@@ -23,7 +23,8 @@ import com.hivemq.extension.sdk.api.packets.pubrec.PubrecPacket;
 import com.hivemq.extension.sdk.api.parameter.ClientBasedInput;
 
 /**
- * This is the input parameter for any {@link PubrecInboundInterceptor} providing PUBREC information.
+ * This is the input parameter for any {@link PubrecInboundInterceptor}
+ * providing PUBREC, connection and client based information.
  *
  * @author Yannick Weber
  */

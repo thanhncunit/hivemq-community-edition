@@ -20,7 +20,7 @@ import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.annotations.Nullable;
 import com.hivemq.extension.sdk.api.packets.general.UserProperties;
 import com.hivemq.extension.sdk.api.packets.pubcomp.PubcompPacket;
-import com.hivemq.extension.sdk.api.packets.publish.PubcompReasonCode;
+import com.hivemq.extension.sdk.api.packets.pubcomp.PubcompReasonCode;
 import com.hivemq.mqtt.message.pubcomp.PUBCOMP;
 
 import java.util.Optional;

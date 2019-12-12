@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.hivemq.extension.sdk.api.packets.publish;
+package com.hivemq.extension.sdk.api.packets.pubcomp;
 
 /**
- * MQTT 5 Reason codes for PUBREL.
+ * MQTT 5 Reason codes for PUBCOMP.
  * <p>
  * MQTT 3 does not support reason codes for the above mentioned MQTT packet.
  *
  * @author Yannick Weber
  */
-public enum PubrelReasonCode {
+public enum PubcompReasonCode {
 
     SUCCESS,
 
     PACKET_IDENTIFIER_NOT_FOUND
-
 }
