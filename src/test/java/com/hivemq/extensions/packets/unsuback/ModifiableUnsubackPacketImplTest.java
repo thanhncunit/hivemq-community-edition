@@ -33,6 +33,9 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * @author Robin Atherton
+ */
 public class ModifiableUnsubackPacketImplTest {
 
     private ModifiableUnsubackPacketImpl packet;
@@ -46,31 +49,31 @@ public class ModifiableUnsubackPacketImplTest {
     @Before
     public void setUp() throws Exception {
         originalreasonCodes = new ArrayList<>();
-        originalreasonCodes.add(Mqtt5UnsubAckReasonCode.PACKET_IDENTIFIER_IN_USE);
+        originalreasonCodes.add(Mqtt5UnsubAckReasonCode.NO_SUBSCRIPTIONS_EXISTED);
         originalreasonCodes.add(Mqtt5UnsubAckReasonCode.IMPLEMENTATION_SPECIFIC_ERROR);
         originalreasonCodes.add(Mqtt5UnsubAckReasonCode.TOPIC_FILTER_INVALID);
         original = createTestUnsuback(1, originalreasonCodes, "reasonCodes");
         packet = createTestUnsubackPacket(1, originalreasonCodes, "reasonCodes");
 
         modifiedReasonCodes = new ArrayList<>();
-        modifiedReasonCodes.add(UnsubackReasonCode.PACKET_IDENTIFIER_IN_USE);
-        modifiedReasonCodes.add(UnsubackReasonCode.NO_SUBSCRIPTIONS_EXISTED);
-        modifiedReasonCodes.add(UnsubackReasonCode.TOPIC_FILTER_INVALID);
+        modifiedReasonCodes.add(UnsubackReasonCode.SUCCESS);
+        modifiedReasonCodes.add(UnsubackReasonCode.UNSPECIFIED_ERROR);
+        modifiedReasonCodes.add(UnsubackReasonCode.NOT_AUTHORIZED);
     }
 
     @Test
     public void test_change_all_valid_values() {
         final List<UnsubackReasonCode> reasonCodes = new ArrayList<>();
-        reasonCodes.add(UnsubackReasonCode.PACKET_IDENTIFIER_IN_USE);
-        reasonCodes.add(UnsubackReasonCode.NO_SUBSCRIPTIONS_EXISTED);
+        reasonCodes.add(UnsubackReasonCode.SUCCESS);
+        reasonCodes.add(UnsubackReasonCode.UNSPECIFIED_ERROR);
         reasonCodes.add(UnsubackReasonCode.NOT_AUTHORIZED);
 
         packet.setReasonString("testReasonString");
         packet.setReasonCodes(reasonCodes);
 
-        assertEquals("testReasonString", packet.getReasonString());
-        assertEquals(UnsubackReasonCode.PACKET_IDENTIFIER_IN_USE, packet.getReasonCodes().get(0));
-        assertEquals(UnsubackReasonCode.NO_SUBSCRIPTIONS_EXISTED, packet.getReasonCodes().get(1));
+        assertEquals("testReasonString", packet.getReasonString().get());
+        assertEquals(UnsubackReasonCode.SUCCESS, packet.getReasonCodes().get(0));
+        assertEquals(UnsubackReasonCode.UNSPECIFIED_ERROR, packet.getReasonCodes().get(1));
         assertEquals(UnsubackReasonCode.NOT_AUTHORIZED, packet.getReasonCodes().get(2));
     }
 
@@ -85,14 +88,15 @@ public class ModifiableUnsubackPacketImplTest {
         assertTrue(packet.isModified());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void test_set_reason_string_null() {
         packet.setReasonString(null);
+        assertTrue(packet.isModified());
     }
 
     @Test(expected = NullPointerException.class)
     public void test_set_reason_codes_null() {
-        packet.setReasonString(null);
+        packet.setReasonCodes(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -137,6 +141,5 @@ public class ModifiableUnsubackPacketImplTest {
                 Mqtt5UserProperties.builder().add(new MqttUserProperty("test", "test"));
         final Mqtt5UserProperties properties = builder.build();
         return new UNSUBACK(packetIdentifier, reasonCodes, reasonString, properties);
-
     }
 }
