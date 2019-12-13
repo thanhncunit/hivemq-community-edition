@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.hivemq.extensions.interceptor.unsuback.parameter;
 
-import com.hivemq.annotations.NotNull;
 import com.hivemq.extension.sdk.api.annotations.Immutable;
+import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.client.parameter.ClientInformation;
 import com.hivemq.extension.sdk.api.client.parameter.ConnectionInformation;
 import com.hivemq.extension.sdk.api.interceptor.unsuback.parameter.UnsubackOutboundInput;
@@ -32,25 +33,26 @@ import java.util.function.Supplier;
 /**
  * @author Robin Atherton
  */
-public class UnsubackOutboundInputImpl implements Supplier<UnsubackOutboundInputImpl>, UnsubackOutboundInput,
-        PluginTaskInput {
+public class UnsubackOutboundInputImpl
+        implements Supplier<UnsubackOutboundInputImpl>, UnsubackOutboundInput, PluginTaskInput {
 
-    private final @NotNull ConnectionInformation connectionInformation;
     private final @NotNull ClientInformation clientInformation;
-    private @NotNull UnsubackPacket unsubackPacket;
+    private final @NotNull ConnectionInformation connectionInformation;
+    private @NotNull UnsubackPacketImpl unsubackPacket;
 
     public UnsubackOutboundInputImpl(
             final @NotNull String clientId,
             final @NotNull Channel channel,
             final @NotNull UNSUBACK unsuback) {
-        this.clientInformation = PluginInformationUtil.getAndSetClientInformation(channel, clientId);
-        this.connectionInformation = PluginInformationUtil.getAndSetConnectionInformation(channel);
-        this.unsubackPacket = new UnsubackPacketImpl(unsuback);
+
+        clientInformation = PluginInformationUtil.getAndSetClientInformation(channel, clientId);
+        connectionInformation = PluginInformationUtil.getAndSetConnectionInformation(channel);
+        unsubackPacket = new UnsubackPacketImpl(unsuback);
     }
 
     @Override
-    public @NotNull @Immutable UnsubackPacket getUnsubackPacket() {
-        return unsubackPacket;
+    public @NotNull ClientInformation getClientInformation() {
+        return clientInformation;
     }
 
     @Override
@@ -59,13 +61,12 @@ public class UnsubackOutboundInputImpl implements Supplier<UnsubackOutboundInput
     }
 
     @Override
-    public @NotNull ClientInformation getClientInformation() {
-        return clientInformation;
+    public @Immutable @NotNull UnsubackPacket getUnsubackPacket() {
+        return unsubackPacket;
     }
 
-    @NotNull
     @Override
-    public UnsubackOutboundInputImpl get() {
+    public @NotNull UnsubackOutboundInputImpl get() {
         return this;
     }
 

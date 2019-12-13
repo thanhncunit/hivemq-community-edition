@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.hivemq.extensions.packets.unsuback;
 
 import com.google.common.collect.ImmutableList;
-import com.hivemq.annotations.NotNull;
+import com.hivemq.extension.sdk.api.annotations.Immutable;
+import com.hivemq.extension.sdk.api.annotations.NotNull;
+import com.hivemq.extension.sdk.api.annotations.Nullable;
 import com.hivemq.extension.sdk.api.packets.general.UserProperties;
 import com.hivemq.extension.sdk.api.packets.unsuback.UnsubackPacket;
 import com.hivemq.extension.sdk.api.packets.unsuback.UnsubackReasonCode;
@@ -24,56 +27,54 @@ import com.hivemq.mqtt.message.reason.Mqtt5UnsubAckReasonCode;
 import com.hivemq.mqtt.message.unsuback.UNSUBACK;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Robin Atherton
+ * @author Silvio Giebl
  */
 public class UnsubackPacketImpl implements UnsubackPacket {
 
-    private final @NotNull UNSUBACK unsuback;
-    private final @NotNull ImmutableList<UnsubackReasonCode> unsubackReasonCodes;
+    private final @NotNull ImmutableList<UnsubackReasonCode> reasonCodes;
+    private final @Nullable String reasonString;
+    private final int packetIdentifier;
     private final @NotNull UserProperties userProperties;
-    private final @NotNull String reasonString;
 
-    public UnsubackPacketImpl(@NotNull final UNSUBACK unsuback) {
-        this.unsuback = unsuback;
+    public UnsubackPacketImpl(final @NotNull UNSUBACK unsuback) {
         final ImmutableList.Builder<UnsubackReasonCode> builder = ImmutableList.builder();
-        for (final Mqtt5UnsubAckReasonCode code : this.unsuback.getReasonCodes()) {
+        for (final Mqtt5UnsubAckReasonCode code : unsuback.getReasonCodes()) {
             builder.add(UnsubackReasonCode.valueOf(code.name()));
         }
-        this.unsubackReasonCodes = builder.build();
-        this.userProperties = this.unsuback.getUserProperties().getPluginUserProperties();
-        this.reasonString = this.unsuback.getReasonString();
+        reasonCodes = builder.build();
+        reasonString = unsuback.getReasonString();
+        packetIdentifier = unsuback.getPacketIdentifier();
+        userProperties = unsuback.getUserProperties().getPluginUserProperties();
     }
 
-    public UnsubackPacketImpl(@NotNull final UnsubackPacket unsubackPacket) {
-        this.unsuback = UNSUBACK.createUnsubackFrom(unsubackPacket);
-        final ImmutableList.Builder<UnsubackReasonCode> builder = ImmutableList.builder();
-        for (final Mqtt5UnsubAckReasonCode code : this.unsuback.getReasonCodes()) {
-            builder.add(UnsubackReasonCode.valueOf(code.name()));
-        }
-        this.unsubackReasonCodes = builder.build();
-        this.userProperties = this.unsuback.getUserProperties().getPluginUserProperties();
-        this.reasonString = this.unsuback.getReasonString();
+    public UnsubackPacketImpl(final @NotNull UnsubackPacket unsubackPacket) {
+        reasonCodes = ImmutableList.copyOf(unsubackPacket.getReasonCodes());
+        reasonString = unsubackPacket.getReasonString().orElse(null);
+        packetIdentifier = unsubackPacket.getPacketIdentifier();
+        userProperties = unsubackPacket.getUserProperties();
     }
 
     @Override
-    public @NotNull List<UnsubackReasonCode> getReasonCodes() {
-        return unsubackReasonCodes;
+    public @Immutable @NotNull List<@NotNull UnsubackReasonCode> getReasonCodes() {
+        return reasonCodes;
     }
 
     @Override
-    public @NotNull String getReasonString() {
-        return this.reasonString;
+    public @NotNull Optional<String> getReasonString() {
+        return Optional.ofNullable(reasonString);
     }
 
     @Override
     public int getPacketIdentifier() {
-        return unsuback.getPacketIdentifier();
+        return packetIdentifier;
     }
 
     @Override
-    public @NotNull UserProperties getUserProperties() {
+    public @Immutable @NotNull UserProperties getUserProperties() {
         return userProperties;
     }
 }

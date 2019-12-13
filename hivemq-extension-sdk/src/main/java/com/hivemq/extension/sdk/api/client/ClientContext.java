@@ -72,15 +72,6 @@ public interface ClientContext {
     void addSubscribeInboundInterceptor(@NotNull SubscribeInboundInterceptor subscribeInboundInterceptor);
 
     /**
-     * Adds an {@link UnsubackOutboundInterceptor} for this client. <br> Subsequent adding of the same interceptor will
-     * be ignored.
-     *
-     * @param unsubackOutboundInterceptor The implementation of an UnsubackOutboundInterceptors.
-     * @throws NullPointerException If the interceptor is null.
-     */
-    void addUnsubackOutboundInterceptor(@NotNull UnsubackOutboundInterceptor unsubackOutboundInterceptor);
-
-    /**
      * Adds an {@link DisconnectInboundInterceptor} for this client. <br>
      * Subsequent adding of the same interceptor will be ignored.
      *
@@ -90,13 +81,23 @@ public interface ClientContext {
     void addDisconnectInboundInterceptor(@NotNull DisconnectInboundInterceptor disconnectInboundInterceptor);
 
     /**
-     * Adds an {@link DisconnectInboundInterceptor} for this client. <br>
+     * Adds an {@link DisconnectOutboundInterceptor} for this client. <br>
      * Subsequent adding of the same interceptor will be ignored.
      *
      * @param disconnectOutboundInterceptor The implementation of a DisconnectOutboundInterceptor.
      * @throws NullPointerException If the interceptor is null.
      */
     void addDisconnectOutboundInterceptor(@NotNull DisconnectOutboundInterceptor disconnectOutboundInterceptor);
+
+    /**
+     * Adds an {@link UnsubackOutboundInterceptor} for this client. <br>
+     * Subsequent adding of the same interceptor will be ignored.
+     *
+     * @param unsubackOutboundInterceptor The implementation of an UnsubackOutboundInterceptors.
+     * @throws NullPointerException If the interceptor is null.
+     * @since 4.3.0
+     */
+    void addUnsubackOutboundInterceptor(@NotNull UnsubackOutboundInterceptor unsubackOutboundInterceptor);
 
     /**
      * Removes an {@link PublishInboundInterceptor} for this client. <br>
@@ -133,6 +134,7 @@ public interface ClientContext {
      * Nothing happens if the interceptor that should be removed, has not been added in the first place.
      *
      * @param disconnectInboundInterceptor The implementation of an DisconnectInboundInterceptor.
+     * @throws NullPointerException If the interceptor is null.
      */
     void removeDisconnectInboundInterceptor(@NotNull DisconnectInboundInterceptor disconnectInboundInterceptor);
 
@@ -141,6 +143,7 @@ public interface ClientContext {
      * Nothing happens if the interceptor that should be removed, has not been added in the first place.
      *
      * @param disconnectOutboundInterceptor The implementation of an DisconnectOutboundInterceptor.
+     * @throws NullPointerException If the interceptor is null.
      */
     void removeDisconnectOutboundInterceptor(@NotNull DisconnectOutboundInterceptor disconnectOutboundInterceptor);
 
@@ -149,6 +152,7 @@ public interface ClientContext {
      * should be removed, has not been added in the first place.
      *
      * @param unsubackOutboundInterceptor The implementation of an UnsubackOutboundInterceptor.
+     * @throws NullPointerException If the interceptor is null.
      */
     void removeUnsubackOutboundInterceptor(@NotNull UnsubackOutboundInterceptor unsubackOutboundInterceptor);
 
@@ -189,14 +193,6 @@ public interface ClientContext {
     @NotNull List<@NotNull SubscribeInboundInterceptor> getSubscribeInboundInterceptors();
 
     /**
-     * Returns all {@link DisconnectOutboundInterceptor} which are registered for this client by this extension.
-     *
-     * @return List of DisconnectOutboundInterceptors for this client.
-     */
-    @Immutable
-    @NotNull List<@NotNull DisconnectOutboundInterceptor> getDisconnectOutboundInterceptors();
-
-    /**
      * Returns all {@link DisconnectInboundInterceptor} which are registered for this client by this extension.
      *
      * @return List of DisconnectInboundInterceptors for this client.
@@ -205,12 +201,20 @@ public interface ClientContext {
     @NotNull List<@NotNull DisconnectInboundInterceptor> getDisconnectInboundInterceptors();
 
     /**
+     * Returns all {@link DisconnectOutboundInterceptor} which are registered for this client by this extension.
+     *
+     * @return List of DisconnectOutboundInterceptors for this client.
+     */
+    @Immutable
+    @NotNull List<@NotNull DisconnectOutboundInterceptor> getDisconnectOutboundInterceptors();
+
+    /**
      * Returns all {@link UnsubackOutboundInterceptor} which are registered for this client by this extension.
      *
      * @return List of UnsubackOutboundInterceptors for this client.
      */
-    @NotNull
-    @Immutable List<UnsubackOutboundInterceptor> getUnsubscribeOutboundInterceptors();
+    @Immutable
+    @NotNull List<UnsubackOutboundInterceptor> getUnsubackOutboundInterceptors();
 
     /**
      * The default permissions for this client. Default permissions are automatically applied by HiveMQ for every MQTT

@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.hivemq.extensions.packets.unsuback;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.hivemq.annotations.NotNull;
 import com.hivemq.configuration.service.FullConfigurationService;
+import com.hivemq.extension.sdk.api.annotations.Immutable;
+import com.hivemq.extension.sdk.api.annotations.NotNull;
+import com.hivemq.extension.sdk.api.annotations.Nullable;
 import com.hivemq.extension.sdk.api.packets.general.ModifiableUserProperties;
 import com.hivemq.extension.sdk.api.packets.unsuback.ModifiableUnsubackPacket;
 import com.hivemq.extension.sdk.api.packets.unsuback.UnsubackPacket;
@@ -31,114 +34,105 @@ import com.hivemq.mqtt.message.unsuback.UNSUBACK;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author Robin Atherton
+ * @author Silvio Giebl
  */
 public class ModifiableUnsubackPacketImpl implements ModifiableUnsubackPacket {
 
     private final @NotNull FullConfigurationService configurationService;
-    private final @NotNull ModifiableUserPropertiesImpl userProperties;
+
+    private @NotNull ImmutableList<UnsubackReasonCode> reasonCodes;
+    private @Nullable String reasonString;
     private final int packetIdentifier;
+    private final @NotNull ModifiableUserPropertiesImpl userProperties;
 
     private boolean modified = false;
-    private @NotNull String reasonString;
-    private @NotNull ImmutableList<UnsubackReasonCode> reasonCodes;
 
     public ModifiableUnsubackPacketImpl(
             final @NotNull FullConfigurationService fullConfigurationService,
             final @NotNull UNSUBACK unsuback) {
+
         this.configurationService = fullConfigurationService;
-        this.userProperties = new ModifiableUserPropertiesImpl(
-                unsuback.getUserProperties().getPluginUserProperties(),
-                fullConfigurationService.securityConfiguration().validateUTF8());
-        this.packetIdentifier = unsuback.getPacketIdentifier();
-        this.reasonString = unsuback.getReasonString();
         final ImmutableList.Builder<UnsubackReasonCode> builder = ImmutableList.builder();
         for (final Mqtt5UnsubAckReasonCode code : unsuback.getReasonCodes()) {
             builder.add(UnsubackReasonCode.valueOf(code.name()));
         }
-        this.reasonCodes = builder.build();
+        reasonCodes = builder.build();
+        reasonString = unsuback.getReasonString();
+        packetIdentifier = unsuback.getPacketIdentifier();
+        userProperties = new ModifiableUserPropertiesImpl(
+                unsuback.getUserProperties().getPluginUserProperties(),
+                fullConfigurationService.securityConfiguration().validateUTF8());
     }
 
     public ModifiableUnsubackPacketImpl(
             final @NotNull FullConfigurationService fullConfigurationService,
             final @NotNull UnsubackPacket unsubackPacket) {
+
         this.configurationService = fullConfigurationService;
-        this.userProperties = new ModifiableUserPropertiesImpl(
+        reasonCodes = ImmutableList.copyOf(unsubackPacket.getReasonCodes());
+        reasonString = unsubackPacket.getReasonString().orElse(null);
+        packetIdentifier = unsubackPacket.getPacketIdentifier();
+        userProperties = new ModifiableUserPropertiesImpl(
                 (InternalUserProperties) unsubackPacket.getUserProperties(),
                 fullConfigurationService.securityConfiguration().validateUTF8());
-        this.packetIdentifier = unsubackPacket.getPacketIdentifier();
-        this.reasonString = unsubackPacket.getReasonString();
-        final ImmutableList.Builder<UnsubackReasonCode> builder = ImmutableList.builder();
-        for (final UnsubackReasonCode code : unsubackPacket.getReasonCodes()) {
-            builder.add(UnsubackReasonCode.valueOf(code.name()));
-        }
-        this.reasonCodes = builder.build();
     }
 
     @Override
-    public void setReasonString(@NotNull final String reasonString) {
-        Preconditions.checkNotNull(reasonString, "Reason String must never be null.");
-        PluginBuilderUtil.checkReasonString(reasonString, configurationService.securityConfiguration().validateUTF8());
-        if (reasonString.equals(this.reasonString)) {
-            return;
-        }
-        this.reasonString = reasonString;
-        this.modified = true;
-    }
-
-    @Override
-    public void setReasonCodes(@NotNull final List<UnsubackReasonCode> reasonCodes) {
-        Preconditions.checkNotNull(reasonCodes, "Reason codes must never be null");
-        if (Objects.equals(this.reasonCodes, reasonCodes)) {
-            return;
-        }
-        if (reasonCodes.size() != this.reasonCodes.size()) {
-            throw new IllegalArgumentException("The amount of UNSUBACK reason codes cannot be changed.");
-        }
-        for (int i = 0; i < reasonCodes.size(); i++) {
-            if (this.reasonCodes.get(i).equals(UnsubackReasonCode.SUCCESS)) {
-                if (!reasonCodes.get(i).equals(UnsubackReasonCode.SUCCESS)) {
-                    throw new IllegalArgumentException(
-                            "Cannot change UNSUBACK reason code from successful to unsuccessful. This is caused by the reason code at: " +
-                                    i);
-                }
-            }
-            if (!this.reasonCodes.get(i).equals(UnsubackReasonCode.SUCCESS)) {
-                if (reasonCodes.get(i).equals(UnsubackReasonCode.SUCCESS)) {
-                    throw new IllegalArgumentException(
-                            "Cannot change UNSUBACK reason code from unsuccessful to successful. This is caused by the reason code at: " +
-                                    i);
-
-                }
-            }
-        }
-        this.reasonCodes = ImmutableList.copyOf(reasonCodes);
-        this.modified = true;
-    }
-
-    @Override
-    public @NotNull List<UnsubackReasonCode> getReasonCodes() {
+    public @Immutable @NotNull List<@NotNull UnsubackReasonCode> getReasonCodes() {
         return reasonCodes;
     }
 
     @Override
-    public @NotNull String getReasonString() {
-        return this.reasonString;
+    public void setReasonCodes(final @NotNull List<@NotNull UnsubackReasonCode> reasonCodes) {
+        Preconditions.checkNotNull(reasonCodes, "Reason codes must never be null");
+        if (reasonCodes.size() != this.reasonCodes.size()) {
+            throw new IllegalArgumentException("The amount of UNSUBACK reason codes cannot be changed.");
+        }
+        for (int i = 0; i < reasonCodes.size(); i++) {
+            Preconditions.checkNotNull(reasonCodes, "Reason code (at index %s) must never be null", i);
+            final Mqtt5UnsubAckReasonCode oldReasonCode =
+                    Mqtt5UnsubAckReasonCode.valueOf(this.reasonCodes.get(i).name());
+            final Mqtt5UnsubAckReasonCode newReasonCode = Mqtt5UnsubAckReasonCode.valueOf(reasonCodes.get(i).name());
+            Preconditions.checkState(newReasonCode.isError() == oldReasonCode.isError(),
+                    "Reason code (at index %s) must not switch from successful to unsuccessful or vice versa.", i);
+        }
+        if (Objects.equals(this.reasonCodes, reasonCodes)) {
+            return;
+        }
+        this.reasonCodes = ImmutableList.copyOf(reasonCodes);
+        modified = true;
+    }
+
+    @Override
+    public @NotNull Optional<String> getReasonString() {
+        return Optional.ofNullable(reasonString);
+    }
+
+    @Override
+    public void setReasonString(final @Nullable String reasonString) {
+        PluginBuilderUtil.checkReasonString(reasonString, configurationService.securityConfiguration().validateUTF8());
+        if (Objects.equals(this.reasonString, reasonString)) {
+            return;
+        }
+        this.reasonString = reasonString;
+        modified = true;
     }
 
     @Override
     public int getPacketIdentifier() {
-        return this.packetIdentifier;
+        return packetIdentifier;
     }
 
     @Override
     public @NotNull ModifiableUserProperties getUserProperties() {
-        return this.userProperties;
+        return userProperties;
     }
 
     public boolean isModified() {
-        return modified;
+        return modified || userProperties.isModified();
     }
 }

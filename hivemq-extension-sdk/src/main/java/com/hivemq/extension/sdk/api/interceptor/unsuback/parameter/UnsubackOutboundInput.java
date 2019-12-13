@@ -15,6 +15,7 @@
  */
 package com.hivemq.extension.sdk.api.interceptor.unsuback.parameter;
 
+import com.hivemq.extension.sdk.api.annotations.DoNotImplement;
 import com.hivemq.extension.sdk.api.annotations.Immutable;
 import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.interceptor.unsuback.UnsubackOutboundInterceptor;
@@ -27,13 +28,13 @@ import com.hivemq.extension.sdk.api.parameter.ClientBasedInput;
  *
  * @author Robin Atherton
  */
+@DoNotImplement
 public interface UnsubackOutboundInput extends ClientBasedInput {
 
     /**
      * The unmodifiable UNSUBACK packet that was intercepted.
      *
-     * @return A unmodifiable {@link UnsubackPacket}
+     * @return A unmodifiable {@link UnsubackPacket}.
      */
-    @NotNull
-    @Immutable UnsubackPacket getUnsubackPacket();
+    @Immutable @NotNull UnsubackPacket getUnsubackPacket();
 }

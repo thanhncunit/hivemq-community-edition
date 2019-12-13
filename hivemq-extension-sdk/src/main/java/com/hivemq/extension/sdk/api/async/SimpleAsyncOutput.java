@@ -38,5 +38,4 @@ public interface SimpleAsyncOutput<T> {
      * @since 4.0.0
      */
     @NotNull Async<T> async(@NotNull Duration timeout);
-
 }

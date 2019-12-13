@@ -49,19 +49,17 @@ public class UnsubackOutboundInterceptorHandler extends ChannelOutboundHandlerAd
     private static final Logger log = LoggerFactory.getLogger(UnsubackOutboundInterceptorHandler.class);
 
     private final @NotNull FullConfigurationService configurationService;
-
     private final @NotNull PluginOutPutAsyncer asyncer;
-
     private final @NotNull HiveMQExtensions hiveMQExtensions;
-
     private final @NotNull PluginTaskExecutorService executorService;
 
     @Inject
     public UnsubackOutboundInterceptorHandler(
-            @NotNull final FullConfigurationService configurationService,
-            @NotNull final PluginOutPutAsyncer asyncer,
-            @NotNull final HiveMQExtensions hiveMQExtensions,
-            @NotNull final PluginTaskExecutorService executorService) {
+            final @NotNull FullConfigurationService configurationService,
+            final @NotNull PluginOutPutAsyncer asyncer,
+            final @NotNull HiveMQExtensions hiveMQExtensions,
+            final @NotNull PluginTaskExecutorService executorService) {
+
         this.configurationService = configurationService;
         this.asyncer = asyncer;
         this.hiveMQExtensions = hiveMQExtensions;
@@ -69,8 +67,11 @@ public class UnsubackOutboundInterceptorHandler extends ChannelOutboundHandlerAd
     }
 
     @Override
-    public void write(final ChannelHandlerContext ctx, @NotNull final Object msg, @NotNull final ChannelPromise promise)
-            throws Exception {
+    public void write(
+            final @NotNull ChannelHandlerContext ctx,
+            final @NotNull Object msg,
+            final @NotNull ChannelPromise promise) {
+
         if (!(msg instanceof UNSUBACK)) {
             ctx.write(msg, promise);
             return;
@@ -95,16 +96,15 @@ public class UnsubackOutboundInterceptorHandler extends ChannelOutboundHandlerAd
             ctx.write(unsuback, promise);
             return;
         }
-
         final List<UnsubackOutboundInterceptor> interceptors = clientContext.getUnsubackOutboundInterceptors();
         if (interceptors.isEmpty()) {
             ctx.write(unsuback, promise);
             return;
         }
 
+        final UnsubackOutboundInputImpl input = new UnsubackOutboundInputImpl(clientId, channel, unsuback);
         final UnsubackOutboundOutputImpl output =
                 new UnsubackOutboundOutputImpl(configurationService, asyncer, unsuback);
-        final UnsubackOutboundInputImpl input = new UnsubackOutboundInputImpl(clientId, channel, unsuback);
 
         final UnsubackOutboundInterceptorContext interceptorContext =
                 new UnsubackOutboundInterceptorContext(
@@ -135,13 +135,14 @@ public class UnsubackOutboundInterceptorHandler extends ChannelOutboundHandlerAd
         private final int interceptorCount;
         private final @NotNull AtomicInteger counter;
 
-        public UnsubackOutboundInterceptorContext(
-                @NotNull final Class<?> taskClazz,
-                @NotNull final String identifier,
-                @NotNull final UnsubackOutboundInputImpl input,
-                @NotNull final ChannelHandlerContext ctx,
-                @NotNull final ChannelPromise promise,
+        UnsubackOutboundInterceptorContext(
+                final @NotNull Class<?> taskClazz,
+                final @NotNull String identifier,
+                final @NotNull UnsubackOutboundInputImpl input,
+                final @NotNull ChannelHandlerContext ctx,
+                final @NotNull ChannelPromise promise,
                 final int interceptorCount) {
+
             super(taskClazz, identifier);
             this.input = input;
             this.ctx = ctx;
@@ -151,8 +152,7 @@ public class UnsubackOutboundInterceptorHandler extends ChannelOutboundHandlerAd
         }
 
         @Override
-        public void pluginPost(
-                final @NotNull UnsubackOutboundOutputImpl output) {
+        public void pluginPost(final @NotNull UnsubackOutboundOutputImpl output) {
             if (output.isTimedOut()) {
                 log.debug("Async timeout on outbound UNSUBACK interception.");
                 output.update(input.getUnsubackPacket());
@@ -160,7 +160,6 @@ public class UnsubackOutboundInterceptorHandler extends ChannelOutboundHandlerAd
                 input.update(output.getUnsubackPacket());
             }
             increment(output);
-
         }
 
         public void increment(final @NotNull UnsubackOutboundOutputImpl output) {
@@ -177,18 +176,19 @@ public class UnsubackOutboundInterceptorHandler extends ChannelOutboundHandlerAd
         private final @NotNull UnsubackOutboundInterceptor interceptor;
         private final @NotNull String extensionId;
 
-        public UnsubackOutboundInterceptorTask(
-                @NotNull final UnsubackOutboundInterceptor interceptor,
-                @NotNull final String extensionId) {
+        UnsubackOutboundInterceptorTask(
+                final @NotNull UnsubackOutboundInterceptor interceptor,
+                final @NotNull String extensionId) {
+
             this.interceptor = interceptor;
             this.extensionId = extensionId;
         }
 
         @Override
-        @NotNull
-        public UnsubackOutboundOutputImpl apply(
+        public @NotNull UnsubackOutboundOutputImpl apply(
                 final @NotNull UnsubackOutboundInputImpl input,
                 final @NotNull UnsubackOutboundOutputImpl output) {
+
             try {
                 interceptor.onOutboundUnsuback(input, output);
             } catch (final Throwable e) {
